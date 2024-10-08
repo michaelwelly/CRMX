@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  operator-db-controller:
+    container_name: dispatcher-db-controller
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "7080:7080"
+    networks:
+      - dispatcher-db-controller
+networks:
+  dispatcher-db-controller:
+    driver: bridge
+    name: dispatcher-db-controller_net

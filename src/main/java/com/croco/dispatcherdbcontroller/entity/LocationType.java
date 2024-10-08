@@ -1,0 +1,12 @@
+package com.croco.dispatcherdbcontroller.entity;
+
+public enum LocationType {
+    PRIVATE_HOUSE,
+    APARTMENT,
+    APARTMENT_BUILDING,
+    BASEMENT,
+    SEPARATE_BUILDING;
+
+    LocationType() {
+    }
+}
