@@ -1,0 +1,556 @@
+{
+	"info": {
+		"_postman_id": "5ef4cd83-2276-4e4d-bab1-08799de95dec",
+		"name": "DBController",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "19707195"
+	},
+	"item": [
+		{
+			"name": "getincidents",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "qe",
+						"type": "text"
+					},
+					{
+						"key": "Version",
+						"value": "audio/L24",
+						"type": "text"
+					},
+					{
+						"key": "MD5-Signature",
+						"value": "3",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "   ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:7080/api/incidents/8"
+			},
+			"response": []
+		},
+		{
+			"name": "deleteIncident",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "23",
+						"type": "text"
+					},
+					{
+						"key": "Version",
+						"value": "3",
+						"type": "text"
+					},
+					{
+						"key": "MD5-Signature",
+						"value": "34",
+						"type": "text"
+					}
+				],
+				"url": "http://localhost:7080/api/incidents/12"
+			},
+			"response": []
+		},
+		{
+			"name": "getFilials",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "qqw",
+						"type": "text"
+					},
+					{
+						"key": "Version",
+						"value": "2",
+						"type": "text"
+					},
+					{
+						"key": "MD5-Signature",
+						"value": "23",
+						"type": "text"
+					},
+					{
+						"key": "",
+						"value": "23",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": "http://localhost:7080/api/filials/11"
+			},
+			"response": []
+		},
+		{
+			"name": "deleteFilial",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "23",
+						"type": "text"
+					},
+					{
+						"key": "Version",
+						"value": "34",
+						"type": "text"
+					},
+					{
+						"key": "MD5-Signature",
+						"value": "34",
+						"type": "text"
+					}
+				],
+				"url": "http://localhost:7080/api/filials/12"
+			},
+			"response": []
+		},
+		{
+			"name": "getReporters",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "we",
+						"type": "text"
+					},
+					{
+						"key": "Version",
+						"value": "2",
+						"type": "text"
+					},
+					{
+						"key": "MD5-Signature",
+						"value": "23",
+						"type": "text"
+					}
+				],
+				"url": "http://localhost:7080/api/reporters/11"
+			},
+			"response": []
+		},
+		{
+			"name": "deleteReporter",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "34",
+						"type": "text"
+					},
+					{
+						"key": "Version",
+						"value": "23",
+						"type": "text"
+					},
+					{
+						"key": "MD5-Signature",
+						"value": "23",
+						"type": "text"
+					}
+				],
+				"url": "http://localhost:7080/api/reporters/11"
+			},
+			"response": []
+		},
+		{
+			"name": "getusers",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "audio/webm",
+						"type": "text"
+					},
+					{
+						"key": "Version",
+						"value": "we",
+						"type": "text"
+					},
+					{
+						"key": "MD5-Signature",
+						"value": "wr",
+						"type": "text"
+					}
+				],
+				"url": "http://localhost:7080/api/users/10"
+			},
+			"response": []
+		},
+		{
+			"name": "deleteUser",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "MD5-Signature",
+						"value": "12",
+						"type": "text"
+					},
+					{
+						"key": "Version",
+						"value": "23",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "23",
+						"type": "text"
+					}
+				],
+				"url": "http://localhost:7080/api/users/15"
+			},
+			"response": []
+		},
+		{
+			"name": "createUser",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Version",
+						"value": "1.0",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "df",
+						"type": "text"
+					},
+					{
+						"key": "MD5-Signature",
+						"value": "df",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"nameStr\": \"Оператор 10\",\r\n    \"emailStr\": \"operator10@example.com\",\r\n    \"userNameStr\": \"operator10\",\r\n    \"passwordByte\": \"ASNF\",\r\n    \"ticketByte\": \"3vq8\",\r\n    \"userStatus\": \"AT_LUNCH\",\r\n    \"userType\": \"OPERATOR\",\r\n    \"accessMask\": {\r\n        \"system\": \"write\"\r\n    },\r\n    \"settings\": {\r\n        \"theme\": \"light\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:7080/api/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7080",
+					"path": [
+						"api",
+						"users"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "11",
+							"disabled": true
+						},
+						{
+							"key": "nameStr",
+							"value": "John Doe",
+							"disabled": true
+						},
+						{
+							"key": "emailStr",
+							"value": "john.doe@example.com",
+							"disabled": true
+						},
+						{
+							"key": "userNameStr",
+							"value": "jdoe",
+							"disabled": true
+						},
+						{
+							"key": "passwordByte",
+							"value": "EjRW",
+							"disabled": true
+						},
+						{
+							"key": "ticketByte",
+							"value": "q83v",
+							"disabled": true
+						},
+						{
+							"key": "outStatusId",
+							"value": "2",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "createIncident",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Version",
+						"value": "1.0",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "df",
+						"type": "text"
+					},
+					{
+						"key": "MD5-Signature",
+						"value": "df",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"reporter\": {\r\n        \"id\": 2,\r\n        \"nameStr\": \"Петр Петров23\",\r\n        \"phoneStr\": \"+7(916)2345678\",\r\n        \"descriptionTxt\": \"Комментарий 2\",\r\n        \"attributesJson\": {\r\n            \"address\": \"ул. Ленина, д. 2\"\r\n        }\r\n    },\r\n    \"user\": {\r\n        \"id\": 2,\r\n        \"nameStr\": \"Оператор 2\",\r\n        \"emailStr\": \"operator2@example.com\",\r\n        \"userNameStr\": \"operator2\",\r\n        \"passwordByte\": \"I0Vn\",\r\n        \"ticketByte\": \"vN76\",\r\n        \"userStatus\": \"ON_WORK\",\r\n        \"userType\": \"OPERATOR\",\r\n        \"accessMask\": {\r\n            \"system\": \"write\"\r\n        },\r\n        \"settings\": {\r\n            \"theme\": \"light\"\r\n        }\r\n    },\r\n    \"incidentType\": \"SPARKING_WIRES\",\r\n    \"registrationDttm\": \"2024-08-28T16:03:24.448429Z\",\r\n    \"execDttm\": \"2024-08-28T16:03:24.448429Z\",\r\n    \"synchronizationDttm\": null,\r\n    \"locationType\": \"APARTMENT\",\r\n    \"incidentStatus\": \"PENDING\",\r\n    \"descriptionText\": \"Sparking wires in apartment\",\r\n    \"filial\": {\r\n        \"id\": 2,\r\n        \"locations\": {\r\n            \"streets\": [\r\n                \"ул. Гагарина\",\r\n                \"ул. Мира\"\r\n            ]\r\n        },\r\n        \"titleStr\": \"Филиал 2\",\r\n        \"descriptionTxt\": \"Описание 2\",\r\n        \"attributesJson\": {\r\n            \"manager\": \"Петров П.П.\"\r\n        }\r\n    },\r\n    \"addressJson\": {\r\n        \"street\": \"ул. Ленина, д. 2\"\r\n    },\r\n    \"attributesJson\": {\r\n        \"priority\": \"medium\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:7080/api/incidents",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7080",
+					"path": [
+						"api",
+						"incidents"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "11",
+							"disabled": true
+						},
+						{
+							"key": "nameStr",
+							"value": "John Doe",
+							"disabled": true
+						},
+						{
+							"key": "emailStr",
+							"value": "john.doe@example.com",
+							"disabled": true
+						},
+						{
+							"key": "userNameStr",
+							"value": "jdoe",
+							"disabled": true
+						},
+						{
+							"key": "passwordByte",
+							"value": "EjRW",
+							"disabled": true
+						},
+						{
+							"key": "ticketByte",
+							"value": "q83v",
+							"disabled": true
+						},
+						{
+							"key": "outStatusId",
+							"value": "2",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "createReporter",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Version",
+						"value": "1.0",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "df",
+						"type": "text"
+					},
+					{
+						"key": "MD5-Signature",
+						"value": "df",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "    {\r\n        \"nameStr\": \"Ива12н Иван12ов\",\r\n        \"phoneStr\": \"+7(916)1234567\",\r\n        \"descriptionTxt\": \"Комментарий 1\",\r\n        \"attributesJson\": {\r\n            \"address\": \"ул. Ленина, д. 1\"\r\n        }\r\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:7080/api/reporters",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7080",
+					"path": [
+						"api",
+						"reporters"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "11",
+							"disabled": true
+						},
+						{
+							"key": "nameStr",
+							"value": "John Doe",
+							"disabled": true
+						},
+						{
+							"key": "emailStr",
+							"value": "john.doe@example.com",
+							"disabled": true
+						},
+						{
+							"key": "userNameStr",
+							"value": "jdoe",
+							"disabled": true
+						},
+						{
+							"key": "passwordByte",
+							"value": "EjRW",
+							"disabled": true
+						},
+						{
+							"key": "ticketByte",
+							"value": "q83v",
+							"disabled": true
+						},
+						{
+							"key": "outStatusId",
+							"value": "2",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "createFilial",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Version",
+						"value": "1.0",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "df",
+						"type": "text"
+					},
+					{
+						"key": "MD5-Signature",
+						"value": "df",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "    {\r\n        \"locations\": {\r\n            \"streets\": [\r\n                \"ул. Ленина2\",\r\n                \"ул. Пушкина3\"\r\n            ]\r\n        },\r\n        \"titleStr\": \"Филиал 12\",\r\n        \"descriptionTxt\": \"Описание 12\",\r\n        \"attributesJson\": {\r\n            \"manager\": \"Иванов И.И.\"\r\n        }\r\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:7080/api/filials",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7080",
+					"path": [
+						"api",
+						"filials"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "11",
+							"disabled": true
+						},
+						{
+							"key": "nameStr",
+							"value": "John Doe",
+							"disabled": true
+						},
+						{
+							"key": "emailStr",
+							"value": "john.doe@example.com",
+							"disabled": true
+						},
+						{
+							"key": "userNameStr",
+							"value": "jdoe",
+							"disabled": true
+						},
+						{
+							"key": "passwordByte",
+							"value": "EjRW",
+							"disabled": true
+						},
+						{
+							"key": "ticketByte",
+							"value": "q83v",
+							"disabled": true
+						},
+						{
+							"key": "outStatusId",
+							"value": "2",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
