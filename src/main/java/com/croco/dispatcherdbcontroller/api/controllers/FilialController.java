@@ -41,7 +41,7 @@ public class FilialController {
     }
 
     @GetMapping
-    public ResponseEntity<List<FilialDto>> getOperators(@RequestHeader(value = "Version", defaultValue = "1.0") String version,
+    public ResponseEntity<List<FilialDto>> getFilials(@RequestHeader(value = "Version", defaultValue = "1.0") String version,
                                                         @RequestHeader("Authorization") String authToken,
                                                         @RequestHeader("MD5-Signature") String md5Signature) {
         requestValidator.validate(version, authToken, md5Signature);
@@ -55,7 +55,7 @@ public class FilialController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<FilialDto> getFilials(@PathVariable Long id,
+    public ResponseEntity<FilialDto> getFilial(@PathVariable Long id,
                                                 @RequestHeader(value = "Version", defaultValue = "1.0") String version,
                                                 @RequestHeader("Authorization") String authToken,
                                                 @RequestHeader("MD5-Signature") String md5Signature) {
