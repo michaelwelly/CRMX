@@ -42,9 +42,6 @@ public class Reporter {
     @JdbcTypeCode(SqlTypes.JSON)
     private Map<String, Object> attributesJson;
 
-    @Column(name = "description_text", length = Integer.MAX_VALUE)
-    private String descriptionText;
-
     @OneToMany(mappedBy = "reporter")
     private Set<Incident> incidents = new LinkedHashSet<>();
 
