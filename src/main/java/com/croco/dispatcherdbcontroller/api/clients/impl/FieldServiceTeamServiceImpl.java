@@ -23,13 +23,13 @@ public class FieldServiceTeamServiceImpl implements FieldServiceTeamService {
 
     @Override
     public List<FieldServiceTeamDto> getList() {
-        List<FieldServiceTeam> fieldServiceTeams = fieldServiceTeamRepository.findAll();
+        List<FieldServiceTeam> fieldServiceTeams = fieldServiceTeamRepository.findAllWithWorkers();
         return fieldServiceTeamMapper.toDto(fieldServiceTeams);
     }
 
     @Override
     public FieldServiceTeamDto getOne(Long id) {
-        FieldServiceTeam fieldServiceTeam = fieldServiceTeamRepository.findById(id).orElseThrow(() ->
+        FieldServiceTeam fieldServiceTeam = fieldServiceTeamRepository.getOneWithWorkers(id).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "Field Service Team not found"));
         return fieldServiceTeamMapper.toDto(fieldServiceTeam);
     }

@@ -9,5 +9,6 @@ public enum EntityType {
     REPORTER,
     TASK,
     USERSESSION,
+    FIELDSERVICETEAM,
     WORKER
 }

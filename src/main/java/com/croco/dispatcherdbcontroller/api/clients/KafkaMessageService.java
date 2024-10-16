@@ -2,6 +2,13 @@ package com.croco.dispatcherdbcontroller.api.clients;
 
 import com.croco.dispatcherdbcontroller.kafka.DefaultProducer;
 import com.croco.dispatcherdbcontroller.kafka.MessageHandler;
+import com.croco.dispatcherdbcontroller.kafka.handlers.IncidentHandler;
+import com.croco.dispatcherdbcontroller.kafka.handlers.MapHandler;
+import com.croco.dispatcherdbcontroller.kafka.handlers.MediaHandler;
+import com.croco.dispatcherdbcontroller.kafka.handlers.ReporterHandler;
+import com.croco.dispatcherdbcontroller.kafka.handlers.TaskHandler;
+import com.croco.dispatcherdbcontroller.kafka.handlers.UserHandler;
+import com.croco.dispatcherdbcontroller.kafka.handlers.WorkerHandler;
 import com.croco.dispatcherdbcontroller.kafka.model.EntityType;
 import com.croco.dispatcherdbcontroller.kafka.model.KafkaMessage;
 import org.springframework.stereotype.Service;
@@ -14,24 +21,23 @@ public class KafkaMessageService {
     private final Map<EntityType, MessageHandler> handlers = new HashMap<>();
     private final DefaultProducer kafkaControllerProducer;
 
-    public KafkaMessageService(FilialService kafkaFilialService,
-                               IncidentService kafkaIncidentService,
-                               UserService kafkaUserService,
-                               MapService kafkaMapService,
-                               MediaService kafkaMediaService,
-                               ReporterService kafkaReporterService,
-                               TaskService kafkaTaskService,
-                               WorkerService kafkaWorkerService, DefaultProducer kafkaControllerProducer) {
+    public KafkaMessageService(FilialService filialService,
+                               IncidentService incidentService,
+                               UserService userService,
+                               MapService mapService,
+                               MediaService mediaService,
+                               ReporterService reporterService,
+                               TaskService taskService,
+                               WorkerService workerService, DefaultProducer kafkaControllerProducer) {
         this.kafkaControllerProducer = kafkaControllerProducer;
-        handlers.put(EntityType.FILIAL, new FilialHandler(kafkaFilialService, kafkaControllerProducer));
-//        handlers.put(EntityType.INCIDENT, new IncidentHandler(kafkaIncidentService));
-//        handlers.put(EntityType.USER, new UserHandler(kafkaUserService));
-//        handlers.put(EntityType.MAP, new MapHandler(kafkaMapService));
-//        handlers.put(EntityType.MEDIA, new MediaHandler(kafkaMediaService));
-//        handlers.put(EntityType.REPORTER, new ReporterHandler(kafkaReporterService));
-//        handlers.put(EntityType.TASK, new TaskHandler(kafkaTaskService));
-//        handlers.put(EntityType.USERSESSION, new UserSessionHandler(kafkaUserSessionService));
-//        handlers.put(EntityType.WORKER, new WorkerHandler(kafkaWorkerService));
+        handlers.put(EntityType.FILIAL, new FilialHandler(filialService, kafkaControllerProducer));
+        handlers.put(EntityType.INCIDENT, new IncidentHandler(incidentService, kafkaControllerProducer));
+        handlers.put(EntityType.USER, new UserHandler(userService, kafkaControllerProducer));
+        handlers.put(EntityType.MAP, new MapHandler(mapService, kafkaControllerProducer));
+        handlers.put(EntityType.MEDIA, new MediaHandler(mediaService, kafkaControllerProducer));
+        handlers.put(EntityType.REPORTER, new ReporterHandler(reporterService, kafkaControllerProducer));
+        handlers.put(EntityType.TASK, new TaskHandler(taskService, kafkaControllerProducer));
+        handlers.put(EntityType.WORKER, new WorkerHandler(workerService, kafkaControllerProducer));
     }
 
     public void handleMessage(KafkaMessage data) {

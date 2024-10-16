@@ -43,6 +43,7 @@ public class Worker {
 
     @OneToMany(mappedBy = "worker")
     private Set<Task> tasks = new LinkedHashSet<>();
+
     @OneToMany(mappedBy = "workers")
     private Set<FieldServiceTeam> fieldServiceTeams = new LinkedHashSet<>();
 

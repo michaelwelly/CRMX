@@ -23,13 +23,13 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<TaskDto> getList() {
-        List<Task> tasks = taskRepository.findAll();
+        List<Task> tasks = taskRepository.findAllWithWorkers();
         return taskMapper.toDto(tasks);
     }
 
     @Override
     public TaskDto getOne(Long id) {
-        Task task = taskRepository.findById(id).orElseThrow(() ->
+        Task task = taskRepository.findOneWithWorker(id).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found"));
         return taskMapper.toDto(task);
     }
