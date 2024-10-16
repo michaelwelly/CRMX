@@ -1,14 +1,18 @@
 package com.croco.dispatcherdbcontroller.api.clients.impl;
 
 import com.croco.dispatcherdbcontroller.dto.IncidentDto;
+import com.croco.dispatcherdbcontroller.entity.FieldServiceTeam;
 import com.croco.dispatcherdbcontroller.entity.Filial;
 import com.croco.dispatcherdbcontroller.entity.Incident;
 import com.croco.dispatcherdbcontroller.entity.IncidentStatus;
 import com.croco.dispatcherdbcontroller.entity.Reporter;
+import com.croco.dispatcherdbcontroller.entity.Task;
 import com.croco.dispatcherdbcontroller.entity.User;
+import com.croco.dispatcherdbcontroller.mapper.FieldServiceTeamMapper;
 import com.croco.dispatcherdbcontroller.mapper.FilialMapper;
 import com.croco.dispatcherdbcontroller.mapper.IncidentMapper;
 import com.croco.dispatcherdbcontroller.mapper.ReporterMapper;
+import com.croco.dispatcherdbcontroller.mapper.TaskMapper;
 import com.croco.dispatcherdbcontroller.mapper.UserMapper;
 import com.croco.dispatcherdbcontroller.repository.FilialRepository;
 import com.croco.dispatcherdbcontroller.repository.IncidentRepository;
@@ -16,7 +20,9 @@ import com.croco.dispatcherdbcontroller.api.clients.IncidentService;
 import com.croco.dispatcherdbcontroller.repository.ReporterRepository;
 import com.croco.dispatcherdbcontroller.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.Hibernate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -36,7 +42,8 @@ public class IncidentServiceImpl implements IncidentService {
     private final UserMapper userMapper;
     private final ReporterMapper reporterMapper;
     private final FilialMapper filialMapper;
-
+    private final FieldServiceTeamMapper fieldServiceTeamMapper;
+    private final TaskMapper taskMapper;
     private final ObjectMapper objectMapper;
 
     @Override
@@ -47,14 +54,14 @@ public class IncidentServiceImpl implements IncidentService {
 
     @Override
     public IncidentDto getOne(Long id) {
-        Incident incident = incidentRepository.findById(id).orElseThrow(() ->
+        Incident incident = incidentRepository.findIncident(id).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "Entity with id `%s` not found".formatted(id)));
         return incidentMapper.toDto(incident);
     }
 
     @Override
     public List<IncidentDto> getMany(List<Long> ids) {
-        List<Incident> incidents = incidentRepository.findAllById(ids);
+        List<Incident> incidents = incidentRepository.findAllByIdWithDetails(ids);
         return incidentMapper.toDto(incidents);
     }
 
@@ -161,5 +168,55 @@ public class IncidentServiceImpl implements IncidentService {
             return null;
         }
         return OffsetDateTime.parse(date, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+    }
+
+    public IncidentDto getIncidentDto(Long id) {
+        Incident incident = incidentRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Incident not found"));
+
+        Reporter reporter = incident.getReporter();
+        if (reporter != null) {
+            Hibernate.initialize(reporter);
+        }
+
+        User user = incident.getUser();
+        if (user != null) {
+            Hibernate.initialize(user);
+        }
+
+        Filial filial = incident.getFilial();
+        if (filial != null) {
+            Hibernate.initialize(filial);
+        }
+
+        Task tasks = incident.getTasks();
+        if (tasks != null) {
+            Hibernate.initialize(tasks);
+        }
+
+        FieldServiceTeam team = incident.getTeam();
+        if (team != null) {
+            Hibernate.initialize(team);
+        }
+
+        return new IncidentDto(
+                incident.getId(),
+                reporterMapper.toDto(reporter),
+                userMapper.toDto(user),
+                incident.getIncidentType(),
+                incident.getRegistrationDttm(),
+                incident.getExecDttm(),
+                incident.getSynchronizationDttm(),
+                incident.getLocationType(),
+                incident.getIncidentStatus(),
+                incident.getDescriptionText(),
+                filialMapper.toDto(filial),
+                incident.getAddressJson(),
+                incident.getAttributesJson(),
+                incident.getAddressStr(),
+                incident.getChangedDttm(),
+                fieldServiceTeamMapper.toDto(team),
+                taskMapper.toDto(tasks)
+        );
     }
 }

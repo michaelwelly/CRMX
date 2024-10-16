@@ -17,6 +17,26 @@ import java.util.Optional;
 @Repository
 public interface IncidentRepository extends JpaRepository<Incident, Long>, JpaSpecificationExecutor<Incident> {
 
+
+    @Query("SELECT i FROM Incident i " +
+            "JOIN FETCH i.reporter " +
+            "JOIN FETCH i.user " +
+            "JOIN FETCH i.filial " +
+            "JOIN FETCH i.tasks " +
+            "JOIN FETCH i.team " +
+            "WHERE i.id = :id")
+    Optional<Incident> findIncident(Long id);
+
+
+    @Query("SELECT i FROM Incident i " +
+            "JOIN FETCH i.reporter " +
+            "JOIN FETCH i.user " +
+            "JOIN FETCH i.filial " +
+            "JOIN FETCH i.tasks " +
+            "JOIN FETCH i.team " +
+            "WHERE i.id IN :ids")
+    List<Incident> findAllByIdWithDetails(@Param("ids") List<Long> ids);
+
     /**
      * Ищет инциденты по заданному статусу.
      *

@@ -89,7 +89,7 @@ public class Incident {
     @JoinColumn(name = "team_id")
     private FieldServiceTeam team;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "tasks_id")
     private Task tasks;
 

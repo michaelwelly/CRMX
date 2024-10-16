@@ -23,13 +23,13 @@ public class WorkerServiceImpl implements WorkerService {
 
     @Override
     public List<WorkerDto> getList() {
-        List<Worker> workers = workerRepository.findAll();
+        List<Worker> workers = workerRepository.findAllWithTasksAndTeams();
         return workerMapper.toDto(workers);
     }
 
     @Override
     public WorkerDto getOne(Long id) {
-        Worker worker = workerRepository.findById(id).orElseThrow(() ->
+        Worker worker = workerRepository.findByIdWithTasksAndTeams(id).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "Worker not found"));
         return workerMapper.toDto(worker);
     }

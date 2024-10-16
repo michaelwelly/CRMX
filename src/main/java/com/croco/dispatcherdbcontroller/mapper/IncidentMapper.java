@@ -1,10 +1,14 @@
 package com.croco.dispatcherdbcontroller.mapper;
 
+import com.croco.dispatcherdbcontroller.dto.FieldServiceTeamDto;
 import com.croco.dispatcherdbcontroller.dto.IncidentDto;
+import com.croco.dispatcherdbcontroller.dto.TaskDto;
+import com.croco.dispatcherdbcontroller.entity.FieldServiceTeam;
 import com.croco.dispatcherdbcontroller.entity.Incident;
 import com.croco.dispatcherdbcontroller.entity.IncidentStatus;
 import com.croco.dispatcherdbcontroller.entity.IncidentType;
 import com.croco.dispatcherdbcontroller.entity.LocationType;
+import com.croco.dispatcherdbcontroller.entity.Task;
 import org.mapstruct.*;
 
 import java.util.List;
@@ -20,6 +24,8 @@ public interface IncidentMapper {
     @Mapping(target = "locationType", source = "locationType", qualifiedByName = "mapLocationTypeToString")
     @Mapping(target = "incidentType", source = "incidentType", qualifiedByName = "mapIncidentTypeToString")
     @Mapping(target = "incidentStatus", source = "incidentStatus", qualifiedByName = "mapIncidentStatusToString")
+    @Mapping(target = "team", source = "team")
+    @Mapping(target = "tasks", source = "tasks")
     IncidentDto toDto(Incident incident);
 
     List<IncidentDto> toDto(List<Incident> incidents);
@@ -65,4 +71,8 @@ public interface IncidentMapper {
     default LocationType mapStringToLocationType(String locationType) {
         return locationType != null ? LocationType.valueOf(locationType) : null;
     }
+
+    FieldServiceTeamDto toDto(FieldServiceTeam fieldServiceTeam);
+
+    TaskDto toDto(Task task);
 }

@@ -33,4 +33,24 @@ public class IncidentDto {
     OffsetDateTime changedDttm;
     FieldServiceTeamDto team;
     TaskDto tasks;
+
+    public IncidentDto(Long id, ReporterDto reporter, UserDto user, IncidentType incidentType, OffsetDateTime registrationDttm, OffsetDateTime execDttm, OffsetDateTime synchronizationDttm, LocationType locationType, IncidentStatus incidentStatus, String descriptionText, FilialDto filial, Map<String, Object> addressJson, Map<String, Object> attributesJson, String addressStr, OffsetDateTime changedDttm, FieldServiceTeamDto team, TaskDto tasks) {
+        this.id = id;
+        this.reporter = reporter;
+        this.user = user;
+        this.incidentType = incidentType;
+        this.registrationDttm = registrationDttm;
+        this.execDttm = execDttm;
+        this.synchronizationDttm = synchronizationDttm;
+        this.locationType = locationType;
+        this.incidentStatus = incidentStatus;
+        this.descriptionText = descriptionText;
+        this.filial = filial;
+        this.addressJson = addressJson;
+        this.attributesJson = attributesJson;
+        this.addressStr = addressStr;
+        this.changedDttm = changedDttm;
+        this.team = null;
+        this.tasks = tasks;
+    }
 }

@@ -1,7 +1,7 @@
 package com.croco.dispatcherdbcontroller.kafka.handlers;
 
-import com.croco.dispatcherdbcontroller.api.clients.FilialService;
-import com.croco.dispatcherdbcontroller.dto.FilialDto;
+import com.croco.dispatcherdbcontroller.api.clients.WorkerService;
+import com.croco.dispatcherdbcontroller.dto.WorkerDto;
 import com.croco.dispatcherdbcontroller.kafka.DefaultProducer;
 import com.croco.dispatcherdbcontroller.kafka.MessageHandler;
 import com.croco.dispatcherdbcontroller.kafka.model.KafkaMessage;
@@ -13,11 +13,11 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.util.Collections;
 import java.util.List;
 
-public class FilialHandler implements MessageHandler {
-    private final FilialService kafkaFilialService;
+public class WorkerHandler implements MessageHandler {
+    private final WorkerService kafkaWorkerService;
     private final DefaultProducer kafkaControllerProducer;
-    public FilialHandler(FilialService kafkaFilialService, DefaultProducer kafkaControllerProducer) {
-        this.kafkaFilialService = kafkaFilialService;
+    public WorkerHandler(WorkerService kafkaWorkerService, DefaultProducer kafkaControllerProducer) {
+        this.kafkaWorkerService = kafkaWorkerService;
         this.kafkaControllerProducer = kafkaControllerProducer;
     }
 
@@ -26,11 +26,11 @@ public class FilialHandler implements MessageHandler {
         switch (data.action) {
             case GET:
                 if (data.object == null) {
-                    FilialDto getFlialDto = null;
-                    List<FilialDto> getFlialsDtos = null;
+                    WorkerDto getFlialDto = null;
+                    List<WorkerDto> getFlialsDtos = null;
                     KafkaResponse message = null;
                     if (data.elementId != null) {
-                        getFlialDto = kafkaFilialService.getOne(data.elementId);
+                        getFlialDto = kafkaWorkerService.getOne(data.elementId);
                         message = KafkaResponse.builder().
                                 id(data.id).
                                 version(data.version).
@@ -43,7 +43,7 @@ public class FilialHandler implements MessageHandler {
                                 elementId(getFlialDto.getId()).
                                 build();
                     } else {
-                        getFlialsDtos = kafkaFilialService.getList();
+                        getFlialsDtos = kafkaWorkerService.getList();
                         message = KafkaResponse.builder().
                                 id(data.id).
                                 version(data.version).
@@ -60,8 +60,8 @@ public class FilialHandler implements MessageHandler {
                 }
             case CREATE:
                 if (data.object != null) {
-                    FilialDto filialDto = convertToFilialDto(data.object);
-                    FilialDto createdFlialDto = kafkaFilialService.create(filialDto);
+                    WorkerDto workerDto = convertToWorkerDto(data.object);
+                    WorkerDto createdFlialDto = kafkaWorkerService.create(workerDto);
                     KafkaResponse message = KafkaResponse.builder().
                             id(data.id).
                             version(data.version).
@@ -79,8 +79,8 @@ public class FilialHandler implements MessageHandler {
                 break;
             case UPDATE:
                 if (data.elementId != null && data.object != null) {
-                    FilialDto filialDtoUpdate = convertToFilialDto(data.object);
-                    FilialDto updatedFlialDto = kafkaFilialService.update(data.elementId, filialDtoUpdate);
+                    WorkerDto workerDtoUpdate = convertToWorkerDto(data.object);
+                    WorkerDto updatedFlialDto = kafkaWorkerService.update(data.elementId, workerDtoUpdate);
                     KafkaResponse message = KafkaResponse.builder().
                             id(data.id).
                             version(data.version).
@@ -98,7 +98,7 @@ public class FilialHandler implements MessageHandler {
                 break;
             case DELETE:
                 if (data.elementId != null) {
-                    FilialDto deletedFlialDto = kafkaFilialService.delete(data.elementId);
+                    WorkerDto deletedFlialDto = kafkaWorkerService.delete(data.elementId);
                     KafkaResponse message = KafkaResponse.builder().
                             id(data.id).
                             version(data.version).
@@ -121,11 +121,11 @@ public class FilialHandler implements MessageHandler {
         }
     }
 
-    private FilialDto convertToFilialDto(Object object) {
+    private WorkerDto convertToWorkerDto(Object object) {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
         String result = null;
-        FilialDto filialDto = null;
+        WorkerDto workerDto = null;
         try {
             result = mapper.writeValueAsString(object);
         } catch (JsonProcessingException e) {
@@ -133,14 +133,14 @@ public class FilialHandler implements MessageHandler {
         }
         try {
             // Преобразуем объект в JSON-строку, если это необходимо
-            // Десериализуем JSON-строку в объект FilialDto
-            filialDto = mapper.readValue(result, FilialDto.class);
+            // Десериализуем JSON-строку в объект WorkerDto
+            workerDto = mapper.readValue(result, WorkerDto.class);
 
         } catch (JsonProcessingException e) {
-            System.err.println("Ошибка при преобразовании объекта в FilialDto: " + e.getMessage());
+            System.err.println("Ошибка при преобразовании объекта в WorkerDto: " + e.getMessage());
         }
 
-        return filialDto;
+        return workerDto;
     }
 
     private void sendResponse(KafkaResponse response) {

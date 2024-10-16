@@ -1,38 +1,40 @@
 package com.croco.dispatcherdbcontroller.dto;
-
-import com.croco.dispatcherdbcontroller.entity.MapType;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Value;
+
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.Value;
 
 @Value
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class MapDto implements BasicDto{
+public class TasksTemplateDto {
     Long id;
+    TasksTemplateDto incidentType;
     @NotNull
     @Size(max = 255)
     String titleStr;
 
-    String descriptionTxt;
+    Integer orderNum;
     Map<String, Object> attributesJson;
-    MapType mapType;
+    Map<String, Object> subtasksJson;
 
     @JsonCreator
-    public MapDto(
+    public TasksTemplateDto(
             @JsonProperty("id") Long id,
-            @JsonProperty("titleStr") @NotNull String titleStr,
-            @JsonProperty("descriptionTxt") String descriptionTxt,
+            @JsonProperty("incidentType") TasksTemplateDto incidentType,
+            @JsonProperty("titleStr") @NotNull @Size(max = 255) String titleStr,
+            @JsonProperty("orderNum") Integer orderNum,
             @JsonProperty("attributesJson") Map<String, Object> attributesJson,
-            @JsonProperty("mapType") MapType mapType) {
+            @JsonProperty("subtasksJson") Map<String, Object> subtasksJson) {
         this.id = id;
+        this.incidentType = incidentType;
         this.titleStr = titleStr;
-        this.descriptionTxt = descriptionTxt;
+        this.orderNum = orderNum;
         this.attributesJson = attributesJson;
-        this.mapType = mapType;
+        this.subtasksJson = subtasksJson;
     }
 }

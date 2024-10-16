@@ -26,4 +26,20 @@ public class TaskDto {
     private OffsetDateTime beginWorkDttm;
     private OffsetDateTime completeWorkDttm;
     private Integer collectionId;
+
+    public TaskDto(Long id, Long workerId, Map<String, Object> incidentId, String titleStr, Integer orderNum, Map<String, Object> attributesJson, Map<String, Object> subtasksJson, Boolean isCompleteFlag, Integer mediaId, OffsetDateTime toBeginWorkDttm, OffsetDateTime beginWorkDttm, OffsetDateTime completeWorkDttm, Integer collectionId) {
+        this.id = id;
+        this.workerId = workerId;
+        this.incidentId = incidentId;
+        this.titleStr = titleStr;
+        this.orderNum = orderNum;
+        this.attributesJson = attributesJson;
+        this.subtasksJson = subtasksJson;
+        this.isCompleteFlag = isCompleteFlag;
+        this.mediaId = mediaId;
+        this.toBeginWorkDttm = toBeginWorkDttm;
+        this.beginWorkDttm = beginWorkDttm;
+        this.completeWorkDttm = completeWorkDttm;
+        this.collectionId = collectionId;
+    }
 }
