@@ -13,7 +13,7 @@ import org.mapstruct.*;
 
 import java.util.List;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING, uses = {ReporterMapper.class, FilialMapper.class})
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING, uses = {ReporterMapper.class, FilialMapper.class, FieldServiceTeamMapper.class, TaskMapper.class})
 public interface IncidentMapper {
 
     @Mapping(target = "locationType", source = "locationType", qualifiedByName = "mapStringToLocationType")
@@ -72,7 +72,4 @@ public interface IncidentMapper {
         return locationType != null ? LocationType.valueOf(locationType) : null;
     }
 
-    FieldServiceTeamDto toDto(FieldServiceTeam fieldServiceTeam);
-
-    TaskDto toDto(Task task);
 }
