@@ -1,6 +1,5 @@
 package com.croco.dispatcherdbcontroller.dto;
 
-import com.croco.dispatcherdbcontroller.entity.Worker;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -15,7 +14,7 @@ import java.util.Map;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FieldServiceTeamDto implements BasicDto{
     Long id;
-    Worker workers;
+    WorkerDto workers;
 
     @NotNull
     @Size(max = 255)
@@ -29,7 +28,7 @@ public class FieldServiceTeamDto implements BasicDto{
     @JsonCreator
     public FieldServiceTeamDto(
             @JsonProperty("id") Long id,
-            @JsonProperty("workers") Worker workers,
+            @JsonProperty("workers") WorkerDto workers,
             @JsonProperty("nameStr") String nameStr,
             @JsonProperty("attributesJson") Map<String, Object> attributesJson,
             @JsonProperty("createDateDttm") OffsetDateTime createDateDttm,
