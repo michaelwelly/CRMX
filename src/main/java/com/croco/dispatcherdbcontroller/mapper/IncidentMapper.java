@@ -1,24 +1,22 @@
 package com.croco.dispatcherdbcontroller.mapper;
 
-import com.croco.dispatcherdbcontroller.dto.FieldServiceTeamDto;
 import com.croco.dispatcherdbcontroller.dto.IncidentDto;
-import com.croco.dispatcherdbcontroller.dto.TaskDto;
-import com.croco.dispatcherdbcontroller.entity.FieldServiceTeam;
 import com.croco.dispatcherdbcontroller.entity.Incident;
 import com.croco.dispatcherdbcontroller.entity.IncidentStatus;
 import com.croco.dispatcherdbcontroller.entity.IncidentType;
 import com.croco.dispatcherdbcontroller.entity.LocationType;
-import com.croco.dispatcherdbcontroller.entity.Task;
 import org.mapstruct.*;
 
 import java.util.List;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING, uses = {ReporterMapper.class, FilialMapper.class, FieldServiceTeamMapper.class, TaskMapper.class})
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING, uses = {UserMapper.class, ReporterMapper.class, FilialMapper.class, FieldServiceTeamMapper.class, TaskMapper.class})
 public interface IncidentMapper {
 
     @Mapping(target = "locationType", source = "locationType", qualifiedByName = "mapStringToLocationType")
     @Mapping(target = "incidentType", source = "incidentType", qualifiedByName = "mapStringToIncidentType")
     @Mapping(target = "incidentStatus", source = "incidentStatus", qualifiedByName = "mapStringToIncidentStatus")
+    @Mapping(target = "team", source = "team")
+    @Mapping(target = "tasks", source = "tasks")
     Incident toEntity(IncidentDto incidentDto);
 
     @Mapping(target = "locationType", source = "locationType", qualifiedByName = "mapLocationTypeToString")
@@ -28,12 +26,20 @@ public interface IncidentMapper {
     @Mapping(target = "tasks", source = "tasks")
     IncidentDto toDto(Incident incident);
 
+
+    @Mapping(target = "locationType", source = "locationType", qualifiedByName = "mapLocationTypeToString")
+    @Mapping(target = "incidentType", source = "incidentType", qualifiedByName = "mapIncidentTypeToString")
+    @Mapping(target = "incidentStatus", source = "incidentStatus", qualifiedByName = "mapIncidentStatusToString")
+    @Mapping(target = "team", source = "team")
+    @Mapping(target = "tasks", source = "tasks")
     List<IncidentDto> toDto(List<Incident> incidents);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "locationType", source = "locationType", qualifiedByName = "mapStringToLocationType")
     @Mapping(target = "incidentType", source = "incidentType", qualifiedByName = "mapStringToIncidentType")
     @Mapping(target = "incidentStatus", source = "incidentStatus", qualifiedByName = "mapStringToIncidentStatus")
+    @Mapping(target = "team", source = "team")
+    @Mapping(target = "tasks", source = "tasks")
     Incident partialUpdate(IncidentDto incidentDto, @MappingTarget Incident incident);
 
     // Метод для маппинга IncidentStatus в строку

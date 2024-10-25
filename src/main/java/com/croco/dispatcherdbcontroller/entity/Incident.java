@@ -24,11 +24,11 @@ public class Incident {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "reporter_id")
     private Reporter reporter;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "operator_id")
     private User user;
 
@@ -65,7 +65,7 @@ public class Incident {
     private String descriptionText;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "filial_id", nullable = false)
     private Filial filial;
 
@@ -85,7 +85,7 @@ public class Incident {
     @Column(name = "changed_dttm")
     private OffsetDateTime changedDttm;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "team_id")
     private FieldServiceTeam team;
 
