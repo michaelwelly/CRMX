@@ -9,6 +9,7 @@ import com.croco.dispatcherdbcontroller.kafka.handlers.ReporterHandler;
 import com.croco.dispatcherdbcontroller.kafka.handlers.TaskHandler;
 import com.croco.dispatcherdbcontroller.kafka.handlers.UserHandler;
 import com.croco.dispatcherdbcontroller.kafka.handlers.WorkerHandler;
+import com.croco.dispatcherdbcontroller.kafka.handlers.HealthCheckHandler;
 import com.croco.dispatcherdbcontroller.kafka.model.EntityType;
 import com.croco.dispatcherdbcontroller.kafka.model.KafkaMessage;
 import org.springframework.stereotype.Service;
@@ -38,6 +39,7 @@ public class KafkaMessageService {
         handlers.put(EntityType.REPORTER, new ReporterHandler(reporterService, kafkaControllerProducer));
         handlers.put(EntityType.TASK, new TaskHandler(taskService, kafkaControllerProducer));
         handlers.put(EntityType.WORKER, new WorkerHandler(workerService, kafkaControllerProducer));
+        handlers.put(EntityType.HEALTHCHECK, new HealthCheckHandler(kafkaControllerProducer));
     }
 
     public void handleMessage(KafkaMessage data) {

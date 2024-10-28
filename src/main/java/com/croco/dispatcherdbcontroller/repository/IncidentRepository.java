@@ -105,6 +105,13 @@ public interface IncidentRepository extends JpaRepository<Incident, Long>, JpaSp
             @Param("user") User user,
             @Param("statuses") List<IncidentStatus> statuses);
 
+    @Query(value = "SELECT * FROM incident i WHERE " +
+            "(SELECT COUNT(*) FROM jsonb_each_text(i.attributes_json) AS attr " +
+            " WHERE attr.key IN (:keys) AND attr.value IN (:values)) = :attrSize",
+            nativeQuery = true)
+    List<Incident> findByAttributes(@Param("keys") List<String> keys,
+                                    @Param("values") List<String> values,
+                                    @Param("attrSize") int attrSize);
 
     // Фильтр по тегу
     List<Incident> findByIncidentStatusAndIncidentType(IncidentStatus incidentStatus, IncidentType incidentType);

@@ -10,5 +10,6 @@ public enum EntityType {
     TASK,
     USERSESSION,
     FIELDSERVICETEAM,
+    HEALTHCHECK,
     WORKER
 }

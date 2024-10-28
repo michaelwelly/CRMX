@@ -5,8 +5,8 @@ public enum UserType {
     ADMINISTRATOR,
     DISPATCHER,
     DISPATCHED_OFFICER,
-    TRAINEE;
-
+    TRAINEE,
+    OPERATOR,
     UserType() {
     }
 }

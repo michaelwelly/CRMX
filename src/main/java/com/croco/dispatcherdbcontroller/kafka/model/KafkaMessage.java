@@ -23,6 +23,7 @@ public class KafkaMessage {
     public EntityType entityType;
     public Object oldObject;
     public Object object;
+    public String url;
 }
 
 
