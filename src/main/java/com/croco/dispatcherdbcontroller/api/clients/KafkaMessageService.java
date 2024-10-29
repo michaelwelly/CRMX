@@ -40,6 +40,7 @@ public class KafkaMessageService {
         handlers.put(EntityType.TASK, new TaskHandler(taskService, kafkaControllerProducer));
         handlers.put(EntityType.WORKER, new WorkerHandler(workerService, kafkaControllerProducer));
         handlers.put(EntityType.HEALTHCHECK, new HealthCheckHandler(kafkaControllerProducer));
+        handlers.put(EntityType.FIELDSERVICETEAM, new HealthCheckHandler(kafkaControllerProducer));
     }
 
     public void handleMessage(KafkaMessage data) {

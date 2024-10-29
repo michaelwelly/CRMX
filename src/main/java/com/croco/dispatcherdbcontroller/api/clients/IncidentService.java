@@ -19,6 +19,5 @@ public interface IncidentService {
     void deleteMany(List<Long> ids);
     List<IncidentDto> getFilteredIncidents(List<IncidentStatus> statuses, String startDate, String endDate, User user);
     List<IncidentDto> getFilteredIncidentsFromUrl(String url);
-
     List<IncidentDto> getFilteredIncidents(List<IncidentStatus> statuses, String startDate, String endDate, User user, Map<String, String> attributes);
 }
