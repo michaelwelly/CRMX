@@ -26,11 +26,11 @@ public class MapHandler implements MessageHandler {
         switch (data.action) {
             case GET:
                 if (data.object == null) {
-                    MapDto getFlialDto = null;
-                    List<MapDto> getFlialsDtos = null;
+                    MapDto getMapDto = null;
+                    List<MapDto> getMapDtos = null;
                     KafkaResponse message = null;
                     if (data.elementId != null) {
-                        getFlialDto = kafkaMapService.getOne(data.elementId);
+                        getMapDto = kafkaMapService.getOne(data.elementId);
                         message = KafkaResponse.builder().
                                 id(data.id).
                                 version(data.version).
@@ -38,12 +38,12 @@ public class MapHandler implements MessageHandler {
                                 md5Signature(data.md5Signature).
                                 entityType(data.entityType).
                                 action(data.action).
-                                object(getFlialDto).
+                                object(getMapDto).
                                 oldObject(data.getOldObject()).
-                                elementId(getFlialDto.getId()).
+                                elementId(getMapDto.getId()).
                                 build();
                     } else {
-                        getFlialsDtos = kafkaMapService.getList();
+                        getMapDtos = kafkaMapService.getList();
                         message = KafkaResponse.builder().
                                 id(data.id).
                                 version(data.version).
@@ -51,8 +51,8 @@ public class MapHandler implements MessageHandler {
                                 md5Signature(data.md5Signature).
                                 entityType(data.entityType).
                                 action(data.action).
-                                object(getFlialDto).
-                                objectsList(Collections.singletonList(getFlialsDtos)).
+                                object(getMapDto).
+                                objectsList(Collections.singletonList(getMapDtos)).
                                 oldObject(data.object).
                                 build();
                     }

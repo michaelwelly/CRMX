@@ -26,11 +26,11 @@ public class TaskHandler implements MessageHandler {
         switch (data.action) {
             case GET:
                 if (data.object == null) {
-                    TaskDto getFlialDto = null;
-                    List<TaskDto> getFlialsDtos = null;
+                    TaskDto getTaskDto = null;
+                    List<TaskDto> getTaskDtos = null;
                     KafkaResponse message = null;
                     if (data.elementId != null) {
-                        getFlialDto = kafkaTaskService.getOne(data.elementId);
+                        getTaskDto = kafkaTaskService.getOne(data.elementId);
                         message = KafkaResponse.builder().
                                 id(data.id).
                                 version(data.version).
@@ -38,12 +38,12 @@ public class TaskHandler implements MessageHandler {
                                 md5Signature(data.md5Signature).
                                 entityType(data.entityType).
                                 action(data.action).
-                                object(getFlialDto).
+                                object(getTaskDto).
                                 oldObject(data.getOldObject()).
-                                elementId(getFlialDto.getId()).
+                                elementId(getTaskDto.getId()).
                                 build();
                     } else {
-                        getFlialsDtos = kafkaTaskService.getList();
+                        getTaskDtos = kafkaTaskService.getList();
                         message = KafkaResponse.builder().
                                 id(data.id).
                                 version(data.version).
@@ -51,8 +51,8 @@ public class TaskHandler implements MessageHandler {
                                 md5Signature(data.md5Signature).
                                 entityType(data.entityType).
                                 action(data.action).
-                                object(getFlialDto).
-                                objectsList(Collections.singletonList(getFlialsDtos)).
+                                object(getTaskDto).
+                                objectsList(Collections.singletonList(getTaskDtos)).
                                 oldObject(data.object).
                                 build();
                     }

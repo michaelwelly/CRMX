@@ -16,6 +16,7 @@ import java.util.List;
 public class IncidentHandler implements MessageHandler {
     private final IncidentService kafkaIncidentService;
     private final DefaultProducer kafkaControllerProducer;
+
     public IncidentHandler(IncidentService kafkaIncidentService, DefaultProducer kafkaControllerProducer) {
         this.kafkaIncidentService = kafkaIncidentService;
         this.kafkaControllerProducer = kafkaControllerProducer;
@@ -23,46 +24,60 @@ public class IncidentHandler implements MessageHandler {
 
     @Override
     public void handle(KafkaMessage data) {
+        KafkaResponse message = null;
         switch (data.action) {
             case GET:
-                if (data.object == null) {
-                    IncidentDto getFlialDto = null;
-                    List<IncidentDto> getFlialsDtos = null;
-                    KafkaResponse message = null;
+                IncidentDto getIncidentDto = null;
+                List<IncidentDto> getIncidentDtos = null;
+                if (data.url != null) {
+                    getIncidentDtos = kafkaIncidentService.getFilteredIncidentsFromUrl(data.url);
+                    message = KafkaResponse.builder()
+                            .id(data.id)
+                            .version(data.version)
+                            .authToken(data.authToken)
+                            .md5Signature(data.md5Signature)
+                            .entityType(data.entityType)
+                            .action(data.action)
+                            .object(getIncidentDto)
+                            .objectsList(Collections.singletonList(getIncidentDtos))
+                            .oldObject(data.object)
+                            .build();
+                } else if (data.object == null) {
                     if (data.elementId != null) {
-                        getFlialDto = kafkaIncidentService.getOne(data.elementId);
-                        message = KafkaResponse.builder().
-                                id(data.id).
-                                version(data.version).
-                                authToken(data.authToken).
-                                md5Signature(data.md5Signature).
-                                entityType(data.entityType).
-                                action(data.action).
-                                object(getFlialDto).
-                                oldObject(data.getOldObject()).
-                                elementId(getFlialDto.getId()).
-                                build();
+                        getIncidentDto = kafkaIncidentService.getOne(data.elementId);
+                        message = KafkaResponse.builder()
+                                .id(data.id)
+                                .version(data.version)
+                                .authToken(data.authToken)
+                                .md5Signature(data.md5Signature)
+                                .entityType(data.entityType)
+                                .action(data.action)
+                                .object(getIncidentDto)
+                                .oldObject(data.getOldObject())
+                                .elementId(getIncidentDto.getId())
+                                .build();
                     } else {
-                        getFlialsDtos = kafkaIncidentService.getList();
-                        message = KafkaResponse.builder().
-                                id(data.id).
-                                version(data.version).
-                                authToken(data.authToken).
-                                md5Signature(data.md5Signature).
-                                entityType(data.entityType).
-                                action(data.action).
-                                object(getFlialDto).
-                                objectsList(Collections.singletonList(getFlialsDtos)).
-                                oldObject(data.object).
-                                build();
+                        getIncidentDtos = kafkaIncidentService.getList();
+                        message = KafkaResponse.builder()
+                                .id(data.id)
+                                .version(data.version)
+                                .authToken(data.authToken)
+                                .md5Signature(data.md5Signature)
+                                .entityType(data.entityType)
+                                .action(data.action)
+                                .object(getIncidentDto)
+                                .objectsList(Collections.singletonList(getIncidentDtos))
+                                .oldObject(data.object)
+                                .build();
                     }
-                    sendResponse(message);
                 }
+                sendResponse(message);
+                break;
             case CREATE:
                 if (data.object != null) {
                     IncidentDto incidentDto = convertToIncidentDto(data.object);
                     IncidentDto createdFlialDto = kafkaIncidentService.create(incidentDto);
-                    KafkaResponse message = KafkaResponse.builder().
+                    message = KafkaResponse.builder().
                             id(data.id).
                             version(data.version).
                             authToken(data.authToken).
@@ -81,7 +96,7 @@ public class IncidentHandler implements MessageHandler {
                 if (data.elementId != null && data.object != null) {
                     IncidentDto incidentDtoUpdate = convertToIncidentDto(data.object);
                     IncidentDto updatedFlialDto = kafkaIncidentService.update(data.elementId, incidentDtoUpdate);
-                    KafkaResponse message = KafkaResponse.builder().
+                    message = KafkaResponse.builder().
                             id(data.id).
                             version(data.version).
                             authToken(data.authToken).
@@ -99,7 +114,7 @@ public class IncidentHandler implements MessageHandler {
             case DELETE:
                 if (data.elementId != null) {
                     IncidentDto deletedFlialDto = kafkaIncidentService.delete(data.elementId);
-                    KafkaResponse message = KafkaResponse.builder().
+                    message = KafkaResponse.builder().
                             id(data.id).
                             version(data.version).
                             authToken(data.authToken).

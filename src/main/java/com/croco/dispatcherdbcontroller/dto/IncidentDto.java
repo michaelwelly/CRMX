@@ -5,7 +5,8 @@ import com.croco.dispatcherdbcontroller.entity.IncidentType;
 import com.croco.dispatcherdbcontroller.entity.LocationType;
 import jakarta.validation.constraints.NotNull;
 import lombok.Value;
-
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.OffsetDateTime;
 import java.util.Map;
 
@@ -34,7 +35,25 @@ public class IncidentDto {
     FieldServiceTeamDto team;
     TaskDto tasks;
 
-    public IncidentDto(Long id, ReporterDto reporter, UserDto user, IncidentType incidentType, OffsetDateTime registrationDttm, OffsetDateTime execDttm, OffsetDateTime synchronizationDttm, LocationType locationType, IncidentStatus incidentStatus, String descriptionText, FilialDto filial, Map<String, Object> addressJson, Map<String, Object> attributesJson, String addressStr, OffsetDateTime changedDttm, FieldServiceTeamDto team, TaskDto tasks) {
+    @JsonCreator
+    public IncidentDto(
+            @JsonProperty("id") Long id,
+            @JsonProperty("reporter") ReporterDto reporter,
+            @JsonProperty("user") UserDto user,
+            @JsonProperty("incidentType") IncidentType incidentType,
+            @JsonProperty("registrationDttm") OffsetDateTime registrationDttm,
+            @JsonProperty("execDttm") OffsetDateTime execDttm,
+            @JsonProperty("synchronizationDttm") OffsetDateTime synchronizationDttm,
+            @JsonProperty("locationType") LocationType locationType,
+            @JsonProperty("incidentStatus") IncidentStatus incidentStatus,
+            @JsonProperty("descriptionText") String descriptionText,
+            @JsonProperty("filial") FilialDto filial,
+            @JsonProperty("addressJson") Map<String, Object> addressJson,
+            @JsonProperty("attributesJson") Map<String, Object> attributesJson,
+            @JsonProperty("addressStr") String addressStr,
+            @JsonProperty("changedDttm") OffsetDateTime changedDttm,
+            @JsonProperty("team") FieldServiceTeamDto team,
+            @JsonProperty("tasks") TaskDto tasks) {
         this.id = id;
         this.reporter = reporter;
         this.user = user;
@@ -50,7 +69,7 @@ public class IncidentDto {
         this.attributesJson = attributesJson;
         this.addressStr = addressStr;
         this.changedDttm = changedDttm;
-        this.team = null;
+        this.team = team;
         this.tasks = tasks;
     }
 }

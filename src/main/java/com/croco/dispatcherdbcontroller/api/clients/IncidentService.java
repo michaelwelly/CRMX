@@ -6,6 +6,7 @@ import com.croco.dispatcherdbcontroller.entity.User;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 public interface IncidentService {
     List<IncidentDto> getList();
@@ -17,5 +18,6 @@ public interface IncidentService {
     IncidentDto delete(Long id);
     void deleteMany(List<Long> ids);
     List<IncidentDto> getFilteredIncidents(List<IncidentStatus> statuses, String startDate, String endDate, User user);
-
-    }
+    List<IncidentDto> getFilteredIncidentsFromUrl(String url);
+    List<IncidentDto> getFilteredIncidents(List<IncidentStatus> statuses, String startDate, String endDate, User user, Map<String, String> attributes);
+}

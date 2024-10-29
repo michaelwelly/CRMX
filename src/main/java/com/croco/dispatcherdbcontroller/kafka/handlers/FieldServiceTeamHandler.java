@@ -1,7 +1,7 @@
 package com.croco.dispatcherdbcontroller.kafka.handlers;
 
-import com.croco.dispatcherdbcontroller.api.clients.WorkerService;
-import com.croco.dispatcherdbcontroller.dto.WorkerDto;
+import com.croco.dispatcherdbcontroller.api.clients.FieldServiceTeamService;
+import com.croco.dispatcherdbcontroller.dto.FieldServiceTeamDto;
 import com.croco.dispatcherdbcontroller.kafka.DefaultProducer;
 import com.croco.dispatcherdbcontroller.kafka.MessageHandler;
 import com.croco.dispatcherdbcontroller.kafka.model.KafkaMessage;
@@ -13,11 +13,11 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.util.Collections;
 import java.util.List;
 
-public class WorkerHandler implements MessageHandler {
-    private final WorkerService kafkaWorkerService;
+public class FieldServiceTeamHandler implements MessageHandler {
+    private final FieldServiceTeamService kafkaFieldServiceTeamService;
     private final DefaultProducer kafkaControllerProducer;
-    public WorkerHandler(WorkerService kafkaWorkerService, DefaultProducer kafkaControllerProducer) {
-        this.kafkaWorkerService = kafkaWorkerService;
+    public FieldServiceTeamHandler(FieldServiceTeamService kafkaFieldServiceTeamService, DefaultProducer kafkaControllerProducer) {
+        this.kafkaFieldServiceTeamService = kafkaFieldServiceTeamService;
         this.kafkaControllerProducer = kafkaControllerProducer;
     }
 
@@ -26,11 +26,11 @@ public class WorkerHandler implements MessageHandler {
         switch (data.action) {
             case GET:
                 if (data.object == null) {
-                    WorkerDto getWorkerDto = null;
-                    List<WorkerDto> getWorkerDtos = null;
+                    FieldServiceTeamDto getFieldServiceTeamDto = null;
+                    List<FieldServiceTeamDto> getFieldServiceTeamDtos = null;
                     KafkaResponse message = null;
                     if (data.elementId != null) {
-                        getWorkerDto = kafkaWorkerService.getOne(data.elementId);
+                        getFieldServiceTeamDto = kafkaFieldServiceTeamService.getOne(data.elementId);
                         message = KafkaResponse.builder().
                                 id(data.id).
                                 version(data.version).
@@ -38,12 +38,12 @@ public class WorkerHandler implements MessageHandler {
                                 md5Signature(data.md5Signature).
                                 entityType(data.entityType).
                                 action(data.action).
-                                object(getWorkerDto).
+                                object(getFieldServiceTeamDto).
                                 oldObject(data.getOldObject()).
-                                elementId(getWorkerDto.getId()).
+                                elementId(getFieldServiceTeamDto.getId()).
                                 build();
                     } else {
-                        getWorkerDtos = kafkaWorkerService.getList();
+                        getFieldServiceTeamDtos = kafkaFieldServiceTeamService.getList();
                         message = KafkaResponse.builder().
                                 id(data.id).
                                 version(data.version).
@@ -51,8 +51,8 @@ public class WorkerHandler implements MessageHandler {
                                 md5Signature(data.md5Signature).
                                 entityType(data.entityType).
                                 action(data.action).
-                                object(getWorkerDto).
-                                objectsList(Collections.singletonList(getWorkerDtos)).
+                                object(getFieldServiceTeamDto).
+                                objectsList(Collections.singletonList(getFieldServiceTeamDtos)).
                                 oldObject(data.object).
                                 build();
                     }
@@ -60,8 +60,8 @@ public class WorkerHandler implements MessageHandler {
                 }
             case CREATE:
                 if (data.object != null) {
-                    WorkerDto workerDto = convertToWorkerDto(data.object);
-                    WorkerDto createdFlialDto = kafkaWorkerService.create(workerDto);
+                    FieldServiceTeamDto taskDto = convertToFieldServiceTeamDto(data.object);
+                    FieldServiceTeamDto createdFlialDto = kafkaFieldServiceTeamService.create(taskDto);
                     KafkaResponse message = KafkaResponse.builder().
                             id(data.id).
                             version(data.version).
@@ -79,8 +79,8 @@ public class WorkerHandler implements MessageHandler {
                 break;
             case UPDATE:
                 if (data.elementId != null && data.object != null) {
-                    WorkerDto workerDtoUpdate = convertToWorkerDto(data.object);
-                    WorkerDto updatedFlialDto = kafkaWorkerService.update(data.elementId, workerDtoUpdate);
+                    FieldServiceTeamDto taskDtoUpdate = convertToFieldServiceTeamDto(data.object);
+                    FieldServiceTeamDto updatedFlialDto = kafkaFieldServiceTeamService.update(data.elementId, taskDtoUpdate);
                     KafkaResponse message = KafkaResponse.builder().
                             id(data.id).
                             version(data.version).
@@ -98,7 +98,7 @@ public class WorkerHandler implements MessageHandler {
                 break;
             case DELETE:
                 if (data.elementId != null) {
-                    WorkerDto deletedFlialDto = kafkaWorkerService.delete(data.elementId);
+                    FieldServiceTeamDto deletedFlialDto = kafkaFieldServiceTeamService.delete(data.elementId);
                     KafkaResponse message = KafkaResponse.builder().
                             id(data.id).
                             version(data.version).
@@ -121,11 +121,11 @@ public class WorkerHandler implements MessageHandler {
         }
     }
 
-    private WorkerDto convertToWorkerDto(Object object) {
+    private FieldServiceTeamDto convertToFieldServiceTeamDto(Object object) {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
         String result = null;
-        WorkerDto workerDto = null;
+        FieldServiceTeamDto taskDto = null;
         try {
             result = mapper.writeValueAsString(object);
         } catch (JsonProcessingException e) {
@@ -133,14 +133,14 @@ public class WorkerHandler implements MessageHandler {
         }
         try {
             // Преобразуем объект в JSON-строку, если это необходимо
-            // Десериализуем JSON-строку в объект WorkerDto
-            workerDto = mapper.readValue(result, WorkerDto.class);
+            // Десериализуем JSON-строку в объект FieldServiceTeamDto
+            taskDto = mapper.readValue(result, FieldServiceTeamDto.class);
 
         } catch (JsonProcessingException e) {
-            System.err.println("Ошибка при преобразовании объекта в WorkerDto: " + e.getMessage());
+            System.err.println("Ошибка при преобразовании объекта в FieldServiceTeamDto: " + e.getMessage());
         }
 
-        return workerDto;
+        return taskDto;
     }
 
     private void sendResponse(KafkaResponse response) {

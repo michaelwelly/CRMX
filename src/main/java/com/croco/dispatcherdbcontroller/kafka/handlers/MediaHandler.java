@@ -26,11 +26,11 @@ public class MediaHandler implements MessageHandler {
         switch (data.action) {
             case GET:
                 if (data.object == null) {
-                    MediaDto getFlialDto = null;
-                    List<MediaDto> getFlialsDtos = null;
+                    MediaDto getMediaDto = null;
+                    List<MediaDto> getMediaDtos = null;
                     KafkaResponse message = null;
                     if (data.elementId != null) {
-                        getFlialDto = kafkaMediaService.getOne(data.elementId);
+                        getMediaDto = kafkaMediaService.getOne(data.elementId);
                         message = KafkaResponse.builder().
                                 id(data.id).
                                 version(data.version).
@@ -38,12 +38,12 @@ public class MediaHandler implements MessageHandler {
                                 md5Signature(data.md5Signature).
                                 entityType(data.entityType).
                                 action(data.action).
-                                object(getFlialDto).
+                                object(getMediaDto).
                                 oldObject(data.getOldObject()).
-                                elementId(getFlialDto.getId()).
+                                elementId(getMediaDto.getId()).
                                 build();
                     } else {
-                        getFlialsDtos = kafkaMediaService.getList();
+                        getMediaDtos = kafkaMediaService.getList();
                         message = KafkaResponse.builder().
                                 id(data.id).
                                 version(data.version).
@@ -51,8 +51,8 @@ public class MediaHandler implements MessageHandler {
                                 md5Signature(data.md5Signature).
                                 entityType(data.entityType).
                                 action(data.action).
-                                object(getFlialDto).
-                                objectsList(Collections.singletonList(getFlialsDtos)).
+                                object(getMediaDto).
+                                objectsList(Collections.singletonList(getMediaDtos)).
                                 oldObject(data.object).
                                 build();
                     }

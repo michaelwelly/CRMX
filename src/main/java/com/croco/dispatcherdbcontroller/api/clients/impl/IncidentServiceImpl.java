@@ -1,6 +1,8 @@
 package com.croco.dispatcherdbcontroller.api.clients.impl;
 
+import com.croco.dispatcherdbcontroller.api.clients.UserService;
 import com.croco.dispatcherdbcontroller.dto.IncidentDto;
+import com.croco.dispatcherdbcontroller.dto.IncidentFilter;
 import com.croco.dispatcherdbcontroller.entity.FieldServiceTeam;
 import com.croco.dispatcherdbcontroller.entity.Filial;
 import com.croco.dispatcherdbcontroller.entity.Incident;
@@ -19,24 +21,31 @@ import com.croco.dispatcherdbcontroller.repository.IncidentRepository;
 import com.croco.dispatcherdbcontroller.api.clients.IncidentService;
 import com.croco.dispatcherdbcontroller.repository.ReporterRepository;
 import com.croco.dispatcherdbcontroller.repository.UserRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Hibernate;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class IncidentServiceImpl implements IncidentService {
     private final IncidentRepository incidentRepository;
     private final ReporterRepository reporterRepository;
     private final UserRepository userRepository;
+    private final UserService userService;
     private final FilialRepository filialRepository;
     private final IncidentMapper incidentMapper;
     private final UserMapper userMapper;
@@ -152,13 +161,76 @@ public class IncidentServiceImpl implements IncidentService {
         incidentRepository.deleteAllById(ids);
     }
 
+    @Override
     public List<IncidentDto> getFilteredIncidents(List<IncidentStatus> statuses, String startDate, String endDate, User user) {
         // Парсинг строковых дат в OffsetDateTime
         OffsetDateTime startDateTime = parseDate(startDate);
         OffsetDateTime endDateTime = parseDate(endDate);
 
-        if(startDateTime != null && endDateTime != null ){
+        if (startDateTime != null && endDateTime != null) {
             return incidentMapper.toDto(incidentRepository.findByRegistrationDttmBetweenAndUserIdAndStatusIn(startDateTime, endDateTime, user, statuses));
+        } else
+            return incidentMapper.toDto(incidentRepository.findByUserIdAndStatusIn(user, statuses));
+    }
+
+    @Override
+    public List<IncidentDto> getFilteredIncidentsFromUrl(String url) {
+        User user = null;
+
+        IncidentFilter filter = null;
+        filter = parseIncidentFilter(url);
+        if (filter.getUser() != null) {
+            try {
+                user = userMapper.toEntity(userService.getOne(filter.getUser().getId()));
+            } catch (Exception e) {
+                return null;
+            }
+        }
+        try {
+            filter = objectMapper.readValue(url, IncidentFilter.class);
+        } catch (JsonProcessingException e) {
+            log.error("Error when deserialize IncidentFilter");
+            throw new RuntimeException(e);
+        }
+        List<IncidentDto> incidentDtos = getFilteredIncidents(
+                filter.getStatuses(),
+                filter.getStartDate(),
+                filter.getEndDate(),
+                user,
+                filter.getAttributes()
+        );
+
+        if (incidentDtos.isEmpty()) {
+            return null;
+        }
+        return incidentDtos;
+    }
+
+
+    private IncidentFilter parseIncidentFilter(String url) {
+        IncidentFilter incidentFilter = null;
+        try {
+            incidentFilter = IncidentFilter.deserialize(url);
+        } catch (Exception e) {
+            log.error("Error when parsing IncidentFilter url");
+            return null;
+        }
+        return incidentFilter;
+    }
+
+    @Override
+    public List<IncidentDto> getFilteredIncidents(List<IncidentStatus> statuses, String startDate, String endDate, User user, Map<String, String> attributes) {
+        // Парсинг строковых дат в OffsetDateTime
+        OffsetDateTime startDateTime = parseDate(startDate);
+        OffsetDateTime endDateTime = parseDate(endDate);
+
+        if (startDateTime != null && endDateTime != null) {
+            return incidentMapper.toDto(incidentRepository.findByRegistrationDttmBetweenAndUserIdAndStatusIn(startDateTime, endDateTime, user, statuses));
+        } else if (attributes != null && !attributes.isEmpty()) {
+            return incidentMapper.toDto(incidentRepository.findByAttributes(
+                    new ArrayList<>(attributes.keySet()),
+                    new ArrayList<>(attributes.values()),
+                    attributes.size()));
         } else
             return incidentMapper.toDto(incidentRepository.findByUserIdAndStatusIn(user, statuses));
     }
