@@ -26,11 +26,11 @@ public class ReporterHandler implements MessageHandler {
         switch (data.action) {
             case GET:
                 if (data.object == null) {
-                    ReporterDto getFlialDto = null;
-                    List<ReporterDto> getFlialsDtos = null;
+                    ReporterDto getReporterDto = null;
+                    List<ReporterDto> getReporterDtos = null;
                     KafkaResponse message = null;
                     if (data.elementId != null) {
-                        getFlialDto = kafkaReporterService.getOne(data.elementId);
+                        getReporterDto = kafkaReporterService.getOne(data.elementId);
                         message = KafkaResponse.builder().
                                 id(data.id).
                                 version(data.version).
@@ -38,12 +38,12 @@ public class ReporterHandler implements MessageHandler {
                                 md5Signature(data.md5Signature).
                                 entityType(data.entityType).
                                 action(data.action).
-                                object(getFlialDto).
+                                object(getReporterDto).
                                 oldObject(data.getOldObject()).
-                                elementId(getFlialDto.getId()).
+                                elementId(getReporterDto.getId()).
                                 build();
                     } else {
-                        getFlialsDtos = kafkaReporterService.getList();
+                        getReporterDtos = kafkaReporterService.getList();
                         message = KafkaResponse.builder().
                                 id(data.id).
                                 version(data.version).
@@ -51,8 +51,8 @@ public class ReporterHandler implements MessageHandler {
                                 md5Signature(data.md5Signature).
                                 entityType(data.entityType).
                                 action(data.action).
-                                object(getFlialDto).
-                                objectsList(Collections.singletonList(getFlialsDtos)).
+                                object(getReporterDto).
+                                objectsList(Collections.singletonList(getReporterDtos)).
                                 oldObject(data.object).
                                 build();
                     }

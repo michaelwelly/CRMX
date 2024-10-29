@@ -27,10 +27,10 @@ public class IncidentHandler implements MessageHandler {
         KafkaResponse message = null;
         switch (data.action) {
             case GET:
-                IncidentDto getFlialDto = null;
-                List<IncidentDto> getFlialsDtos = null;
+                IncidentDto getIncidentDto = null;
+                List<IncidentDto> getIncidentDtos = null;
                 if (data.url != null) {
-                    getFlialsDtos = kafkaIncidentService.getFilteredIncidentsFromUrl(data.url);
+                    getIncidentDtos = kafkaIncidentService.getFilteredIncidentsFromUrl(data.url);
                     message = KafkaResponse.builder()
                             .id(data.id)
                             .version(data.version)
@@ -38,13 +38,13 @@ public class IncidentHandler implements MessageHandler {
                             .md5Signature(data.md5Signature)
                             .entityType(data.entityType)
                             .action(data.action)
-                            .object(getFlialDto)
-                            .objectsList(Collections.singletonList(getFlialsDtos))
+                            .object(getIncidentDto)
+                            .objectsList(Collections.singletonList(getIncidentDtos))
                             .oldObject(data.object)
                             .build();
                 } else if (data.object == null) {
                     if (data.elementId != null) {
-                        getFlialDto = kafkaIncidentService.getOne(data.elementId);
+                        getIncidentDto = kafkaIncidentService.getOne(data.elementId);
                         message = KafkaResponse.builder()
                                 .id(data.id)
                                 .version(data.version)
@@ -52,12 +52,12 @@ public class IncidentHandler implements MessageHandler {
                                 .md5Signature(data.md5Signature)
                                 .entityType(data.entityType)
                                 .action(data.action)
-                                .object(getFlialDto)
+                                .object(getIncidentDto)
                                 .oldObject(data.getOldObject())
-                                .elementId(getFlialDto.getId())
+                                .elementId(getIncidentDto.getId())
                                 .build();
                     } else {
-                        getFlialsDtos = kafkaIncidentService.getList();
+                        getIncidentDtos = kafkaIncidentService.getList();
                         message = KafkaResponse.builder()
                                 .id(data.id)
                                 .version(data.version)
@@ -65,8 +65,8 @@ public class IncidentHandler implements MessageHandler {
                                 .md5Signature(data.md5Signature)
                                 .entityType(data.entityType)
                                 .action(data.action)
-                                .object(getFlialDto)
-                                .objectsList(Collections.singletonList(getFlialsDtos))
+                                .object(getIncidentDto)
+                                .objectsList(Collections.singletonList(getIncidentDtos))
                                 .oldObject(data.object)
                                 .build();
                     }

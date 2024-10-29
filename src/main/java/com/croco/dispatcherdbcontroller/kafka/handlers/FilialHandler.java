@@ -26,11 +26,11 @@ public class FilialHandler implements MessageHandler {
         switch (data.action) {
             case GET:
                 if (data.object == null) {
-                    FilialDto getFlialDto = null;
-                    List<FilialDto> getFlialsDtos = null;
+                    FilialDto getFilialDto = null;
+                    List<FilialDto> getFilialsDtos = null;
                     KafkaResponse message = null;
                     if (data.elementId != null) {
-                        getFlialDto = kafkaFilialService.getOne(data.elementId);
+                        getFilialDto = kafkaFilialService.getOne(data.elementId);
                         message = KafkaResponse.builder().
                                 id(data.id).
                                 version(data.version).
@@ -38,12 +38,12 @@ public class FilialHandler implements MessageHandler {
                                 md5Signature(data.md5Signature).
                                 entityType(data.entityType).
                                 action(data.action).
-                                object(getFlialDto).
+                                object(getFilialDto).
                                 oldObject(data.getOldObject()).
-                                elementId(getFlialDto.getId()).
+                                elementId(getFilialDto.getId()).
                                 build();
                     } else {
-                        getFlialsDtos = kafkaFilialService.getList();
+                        getFilialsDtos = kafkaFilialService.getList();
                         message = KafkaResponse.builder().
                                 id(data.id).
                                 version(data.version).
@@ -51,8 +51,8 @@ public class FilialHandler implements MessageHandler {
                                 md5Signature(data.md5Signature).
                                 entityType(data.entityType).
                                 action(data.action).
-                                object(getFlialDto).
-                                objectsList(Collections.singletonList(getFlialsDtos)).
+                                object(getFilialDto).
+                                objectsList(Collections.singletonList(getFilialsDtos)).
                                 oldObject(data.object).
                                 build();
                     }

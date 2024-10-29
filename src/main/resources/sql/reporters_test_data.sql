@@ -182,3 +182,5 @@ from
   join users u on u.id = i
   join filial f on f.id = i
   join task t on t.id = i;
+
+ALTER TYPE public."usertype" ADD VALUE 'OPERATOR';

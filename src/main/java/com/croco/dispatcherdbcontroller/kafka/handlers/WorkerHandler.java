@@ -26,11 +26,11 @@ public class WorkerHandler implements MessageHandler {
         switch (data.action) {
             case GET:
                 if (data.object == null) {
-                    WorkerDto getFlialDto = null;
-                    List<WorkerDto> getFlialsDtos = null;
+                    WorkerDto getWorkerDto = null;
+                    List<WorkerDto> getWorkerDtos = null;
                     KafkaResponse message = null;
                     if (data.elementId != null) {
-                        getFlialDto = kafkaWorkerService.getOne(data.elementId);
+                        getWorkerDto = kafkaWorkerService.getOne(data.elementId);
                         message = KafkaResponse.builder().
                                 id(data.id).
                                 version(data.version).
@@ -38,12 +38,12 @@ public class WorkerHandler implements MessageHandler {
                                 md5Signature(data.md5Signature).
                                 entityType(data.entityType).
                                 action(data.action).
-                                object(getFlialDto).
+                                object(getWorkerDto).
                                 oldObject(data.getOldObject()).
-                                elementId(getFlialDto.getId()).
+                                elementId(getWorkerDto.getId()).
                                 build();
                     } else {
-                        getFlialsDtos = kafkaWorkerService.getList();
+                        getWorkerDtos = kafkaWorkerService.getList();
                         message = KafkaResponse.builder().
                                 id(data.id).
                                 version(data.version).
@@ -51,8 +51,8 @@ public class WorkerHandler implements MessageHandler {
                                 md5Signature(data.md5Signature).
                                 entityType(data.entityType).
                                 action(data.action).
-                                object(getFlialDto).
-                                objectsList(Collections.singletonList(getFlialsDtos)).
+                                object(getWorkerDto).
+                                objectsList(Collections.singletonList(getWorkerDtos)).
                                 oldObject(data.object).
                                 build();
                     }

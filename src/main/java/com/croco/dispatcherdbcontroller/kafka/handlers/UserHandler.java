@@ -26,11 +26,11 @@ public class UserHandler implements MessageHandler {
         switch (data.action) {
             case GET:
                 if (data.object == null) {
-                    UserDto getFlialDto = null;
-                    List<UserDto> getFlialsDtos = null;
+                    UserDto getUserDto = null;
+                    List<UserDto> getUserDtos = null;
                     KafkaResponse message = null;
                     if (data.elementId != null) {
-                        getFlialDto = kafkaUserService.getOne(data.elementId);
+                        getUserDto = kafkaUserService.getOne(data.elementId);
                         message = KafkaResponse.builder().
                                 id(data.id).
                                 version(data.version).
@@ -38,12 +38,12 @@ public class UserHandler implements MessageHandler {
                                 md5Signature(data.md5Signature).
                                 entityType(data.entityType).
                                 action(data.action).
-                                object(getFlialDto).
+                                object(getUserDto).
                                 oldObject(data.getOldObject()).
-                                elementId(getFlialDto.getId()).
+                                elementId(getUserDto.getId()).
                                 build();
                     } else {
-                        getFlialsDtos = kafkaUserService.getList();
+                        getUserDtos = kafkaUserService.getList();
                         message = KafkaResponse.builder().
                                 id(data.id).
                                 version(data.version).
@@ -51,8 +51,8 @@ public class UserHandler implements MessageHandler {
                                 md5Signature(data.md5Signature).
                                 entityType(data.entityType).
                                 action(data.action).
-                                object(getFlialDto).
-                                objectsList(Collections.singletonList(getFlialsDtos)).
+                                object(getUserDto).
+                                objectsList(Collections.singletonList(getUserDtos)).
                                 oldObject(data.object).
                                 build();
                     }
