@@ -19,21 +19,21 @@ public interface IncidentRepository extends JpaRepository<Incident, Long>, JpaSp
 
 
     @Query("SELECT i FROM Incident i " +
-            "JOIN FETCH i.reporter " +
-            "JOIN FETCH i.user " +
-            "JOIN FETCH i.filial " +
-            "JOIN FETCH i.tasks " +
-            "JOIN FETCH i.team " +
+            "LEFT JOIN FETCH i.reporter " +
+            "LEFT JOIN FETCH i.user " +
+            "LEFT JOIN FETCH i.filial " +
+            "LEFT JOIN FETCH i.tasks " +
+            "LEFT JOIN FETCH i.team " +
             "WHERE i.id = :id")
     Optional<Incident> findIncident(Long id);
 
 
     @Query("SELECT i FROM Incident i " +
-            "JOIN FETCH i.reporter " +
-            "JOIN FETCH i.user " +
-            "JOIN FETCH i.filial " +
-            "JOIN FETCH i.tasks " +
-            "JOIN FETCH i.team " +
+            "LEFT JOIN FETCH i.reporter " +
+            "LEFT JOIN FETCH i.user " +
+            "LEFT JOIN FETCH i.filial " +
+            "LEFT JOIN FETCH i.tasks " +
+            "LEFT JOIN FETCH i.team " +
             "WHERE i.id IN :ids")
     List<Incident> findAllByIdWithDetails(@Param("ids") List<Long> ids);
 

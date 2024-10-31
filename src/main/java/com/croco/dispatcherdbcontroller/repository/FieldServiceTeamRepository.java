@@ -12,10 +12,10 @@ import java.util.Optional;
 @Repository
 public interface FieldServiceTeamRepository extends JpaRepository<FieldServiceTeam, Long> {
 
-    @Query("SELECT fst FROM FieldServiceTeam fst JOIN FETCH fst.workers w WHERE fst.id = :id")
+    @Query("SELECT fst FROM FieldServiceTeam fst LEFT JOIN FETCH fst.workers w WHERE fst.id = :id")
     Optional<FieldServiceTeam> getOneWithWorkers(@Param("id") Long id);
 
 
-    @Query("SELECT fst FROM FieldServiceTeam fst JOIN FETCH fst.workers w")
+    @Query("SELECT fst FROM FieldServiceTeam fst LEFT JOIN FETCH fst.workers w")
     List<FieldServiceTeam> findAllWithWorkers();
 }
