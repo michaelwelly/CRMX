@@ -1,11 +1,14 @@
 package com.croco.dispatcherdbcontroller.kafka.handlers;
 
 import com.croco.dispatcherdbcontroller.api.clients.UserService;
+import com.croco.dispatcherdbcontroller.dto.IncidentDto;
 import com.croco.dispatcherdbcontroller.dto.UserDto;
+import com.croco.dispatcherdbcontroller.entity.User;
 import com.croco.dispatcherdbcontroller.kafka.DefaultProducer;
 import com.croco.dispatcherdbcontroller.kafka.MessageHandler;
 import com.croco.dispatcherdbcontroller.kafka.model.KafkaMessage;
 import com.croco.dispatcherdbcontroller.kafka.model.KafkaResponse;
+import com.croco.dispatcherdbcontroller.service.JwtService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -16,53 +19,69 @@ import java.util.List;
 public class UserHandler implements MessageHandler {
     private final UserService kafkaUserService;
     private final DefaultProducer kafkaControllerProducer;
-    public UserHandler(UserService kafkaUserService, DefaultProducer kafkaControllerProducer) {
+    private final JwtService jwtService;
+    public UserHandler(UserService kafkaUserService, DefaultProducer kafkaControllerProducer, JwtService jwtService) {
         this.kafkaUserService = kafkaUserService;
         this.kafkaControllerProducer = kafkaControllerProducer;
+        this.jwtService = jwtService;
     }
 
     @Override
     public void handle(KafkaMessage data) {
+        KafkaResponse message = null;
         switch (data.action) {
             case GET:
-                if (data.object == null) {
-                    UserDto getUserDto = null;
-                    List<UserDto> getUserDtos = null;
-                    KafkaResponse message = null;
+                UserDto getUserDto = null;
+                List<UserDto> getUserDtos = null;
+                if (data.url != null) {
+                    getUserDto = kafkaUserService.getOneByNameFromUrl(data.url);
+                    var jwt = jwtService.generateToken(getUserDto);
+                    message = KafkaResponse.builder()
+                            .id(data.id)
+                            .version(data.version)
+                            .authToken(jwt)
+                            .md5Signature(data.md5Signature)
+                            .entityType(data.entityType)
+                            .action(data.action)
+                            .object(getUserDto)
+                            .oldObject(data.object)
+                            .build();
+                } else if (data.object == null) {
                     if (data.elementId != null) {
                         getUserDto = kafkaUserService.getOne(data.elementId);
-                        message = KafkaResponse.builder().
-                                id(data.id).
-                                version(data.version).
-                                authToken(data.authToken).
-                                md5Signature(data.md5Signature).
-                                entityType(data.entityType).
-                                action(data.action).
-                                object(getUserDto).
-                                oldObject(data.getOldObject()).
-                                elementId(getUserDto.getId()).
-                                build();
+                        message = KafkaResponse.builder()
+                                .id(data.id)
+                                .version(data.version)
+                                .authToken(data.authToken)
+                                .md5Signature(data.md5Signature)
+                                .entityType(data.entityType)
+                                .action(data.action)
+                                .object(getUserDto)
+                                .oldObject(data.getOldObject())
+                                .elementId(getUserDto.getId())
+                                .build();
                     } else {
                         getUserDtos = kafkaUserService.getList();
-                        message = KafkaResponse.builder().
-                                id(data.id).
-                                version(data.version).
-                                authToken(data.authToken).
-                                md5Signature(data.md5Signature).
-                                entityType(data.entityType).
-                                action(data.action).
-                                object(getUserDto).
-                                objectsList(Collections.singletonList(getUserDtos)).
-                                oldObject(data.object).
-                                build();
+                        message = KafkaResponse.builder()
+                                .id(data.id)
+                                .version(data.version)
+                                .authToken(data.authToken)
+                                .md5Signature(data.md5Signature)
+                                .entityType(data.entityType)
+                                .action(data.action)
+                                .object(getUserDto)
+                                .objectsList(Collections.singletonList(getUserDtos))
+                                .oldObject(data.object)
+                                .build();
                     }
-                    sendResponse(message);
                 }
+                sendResponse(message);
+                break;
             case CREATE:
                 if (data.object != null) {
                     UserDto userDto = convertToUserDto(data.object);
                     UserDto createdFlialDto = kafkaUserService.create(userDto);
-                    KafkaResponse message = KafkaResponse.builder().
+                     message = KafkaResponse.builder().
                             id(data.id).
                             version(data.version).
                             authToken(data.authToken).
@@ -81,7 +100,7 @@ public class UserHandler implements MessageHandler {
                 if (data.elementId != null && data.object != null) {
                     UserDto userDtoUpdate = convertToUserDto(data.object);
                     UserDto updatedFlialDto = kafkaUserService.update(data.elementId, userDtoUpdate);
-                    KafkaResponse message = KafkaResponse.builder().
+                     message = KafkaResponse.builder().
                             id(data.id).
                             version(data.version).
                             authToken(data.authToken).
@@ -99,7 +118,7 @@ public class UserHandler implements MessageHandler {
             case DELETE:
                 if (data.elementId != null) {
                     UserDto deletedFlialDto = kafkaUserService.delete(data.elementId);
-                    KafkaResponse message = KafkaResponse.builder().
+                     message = KafkaResponse.builder().
                             id(data.id).
                             version(data.version).
                             authToken(data.authToken).

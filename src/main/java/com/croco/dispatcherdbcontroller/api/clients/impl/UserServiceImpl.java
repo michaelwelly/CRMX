@@ -1,18 +1,25 @@
 package com.croco.dispatcherdbcontroller.api.clients.impl;
 
+import com.croco.dispatcherdbcontroller.dto.IncidentDto;
+import com.croco.dispatcherdbcontroller.dto.IncidentFilter;
 import com.croco.dispatcherdbcontroller.dto.UserDto;
+import com.croco.dispatcherdbcontroller.dto.UserFilter;
 import com.croco.dispatcherdbcontroller.entity.User;
 import com.croco.dispatcherdbcontroller.mapper.UserMapper;
 import com.croco.dispatcherdbcontroller.repository.UserRepository;
 import com.croco.dispatcherdbcontroller.api.clients.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
+import java.util.Optional;
+
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
@@ -29,6 +36,19 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "Entity with id `%s` not found".formatted(id)));
         return userMapper.toDto(user);
+    }
+
+    @Override
+    public UserDto getOneByName(String userName) {
+        Optional<List<User>> users = userRepository.findByUserNameStrEquals(userName);
+        if (users.get().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+        }
+        if (users.get().size() > 1) {
+            // Логирование или обработка неоднозначности
+            return userMapper.toDto(users.get().get(0)); // Возвращаем первого найденного пользователя
+        }
+        return userMapper.toDto(users.get().get(0));
     }
 
     @Override
@@ -80,5 +100,23 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteMany(List<Long> ids) {
         userRepository.deleteAllById(ids);
+    }
+
+    @Override
+    public UserDto getOneByNameFromUrl(String url) {
+        UserFilter filter = null;
+        filter = parseUserFilter(url);
+       return  getOneByName(filter.userName);
+    }
+
+    private UserFilter parseUserFilter(String url) {
+        UserFilter userFilter = null;
+        try {
+            userFilter = UserFilter.deserialize(url);
+        } catch (Exception e) {
+            log.error("Error when parsing IncidentFilter url");
+            return null;
+        }
+        return userFilter;
     }
 }

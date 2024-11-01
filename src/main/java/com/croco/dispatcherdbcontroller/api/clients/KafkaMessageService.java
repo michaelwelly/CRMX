@@ -12,6 +12,7 @@ import com.croco.dispatcherdbcontroller.kafka.handlers.WorkerHandler;
 import com.croco.dispatcherdbcontroller.kafka.handlers.HealthCheckHandler;
 import com.croco.dispatcherdbcontroller.kafka.model.EntityType;
 import com.croco.dispatcherdbcontroller.kafka.model.KafkaMessage;
+import com.croco.dispatcherdbcontroller.service.JwtService;
 import org.springframework.stereotype.Service;
 import com.croco.dispatcherdbcontroller.kafka.handlers.FilialHandler;
 import java.util.HashMap;
@@ -21,7 +22,7 @@ import java.util.Map;
 public class KafkaMessageService {
     private final Map<EntityType, MessageHandler> handlers = new HashMap<>();
     private final DefaultProducer kafkaControllerProducer;
-
+    private final JwtService jwtService;
     public KafkaMessageService(FilialService filialService,
                                IncidentService incidentService,
                                UserService userService,
@@ -29,11 +30,12 @@ public class KafkaMessageService {
                                MediaService mediaService,
                                ReporterService reporterService,
                                TaskService taskService,
-                               WorkerService workerService, DefaultProducer kafkaControllerProducer) {
+                               WorkerService workerService, DefaultProducer kafkaControllerProducer, JwtService jwtService) {
         this.kafkaControllerProducer = kafkaControllerProducer;
+        this.jwtService = jwtService;
         handlers.put(EntityType.FILIAL, new FilialHandler(filialService, kafkaControllerProducer));
         handlers.put(EntityType.INCIDENT, new IncidentHandler(incidentService, kafkaControllerProducer));
-        handlers.put(EntityType.USER, new UserHandler(userService, kafkaControllerProducer));
+        handlers.put(EntityType.USER, new UserHandler(userService, kafkaControllerProducer, jwtService));
         handlers.put(EntityType.MAP, new MapHandler(mapService, kafkaControllerProducer));
         handlers.put(EntityType.MEDIA, new MediaHandler(mediaService, kafkaControllerProducer));
         handlers.put(EntityType.REPORTER, new ReporterHandler(reporterService, kafkaControllerProducer));

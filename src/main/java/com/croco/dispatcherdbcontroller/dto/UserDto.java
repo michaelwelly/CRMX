@@ -8,12 +8,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Value;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 @Value
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UserDto implements BasicDto {
+public class UserDto implements BasicDto, UserDetails {
 
     Long id;
     @NotNull
@@ -57,5 +62,41 @@ public class UserDto implements BasicDto {
         this.userType = userType;
         this.accessMask = accessMask;
         this.settings = settings;
+    }
+
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+    }
+
+    @Override
+    public String getPassword() {
+        return new String(this.passwordByte); // Преобразуем массив байтов в строку
+    }
+
+    @Override
+    public String getUsername() {
+        return this.userNameStr;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }

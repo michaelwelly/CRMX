@@ -31,15 +31,26 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserDto>> getUsers(@RequestHeader(value = "Version", defaultValue = "1.0") String version,
-                                                  @RequestHeader("Authorization") String authToken,
-                                                  @RequestHeader("MD5-Signature") String md5Signature) {
-        requestValidator.validate(version, authToken, md5Signature);
-        List<UserDto> userDtos = userService.getList();
-        if (userDtos.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    public ResponseEntity<?> getUsers(
+            @RequestParam(required = false) String name,
+            @RequestHeader(value = "Version", defaultValue = "1.0") String version,
+            @RequestHeader("Authorization") String authToken,
+            @RequestHeader("MD5-Signature") String md5Signature) {
+
+        if (name == null) {
+            requestValidator.validate(version, authToken, md5Signature);
         }
-        return ResponseEntity.ok(userDtos);
+
+        if (name != null && !name.isEmpty()) {
+            UserDto userDto = userService.getOneByName(name);
+            return ResponseEntity.ok(userDto);
+        } else {
+            List<UserDto> userDtos = userService.getList();
+            if (userDtos.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+            return ResponseEntity.ok(userDtos);
+        }
     }
 
     @GetMapping("/{id}")
@@ -105,9 +116,9 @@ public class UserController {
 
     @PutMapping("/{id}")
     public ResponseEntity<UserDto> update(@PathVariable Long id, @RequestBody @Validated UserDto userDto,
-                                            @RequestHeader(value = "Version", defaultValue = "1.0") String version,
-                                            @RequestHeader("Authorization") String authToken,
-                                            @RequestHeader("MD5-Signature") String md5Signature) {
+                                          @RequestHeader(value = "Version", defaultValue = "1.0") String version,
+                                          @RequestHeader("Authorization") String authToken,
+                                          @RequestHeader("MD5-Signature") String md5Signature) {
         // Проверка входных параметров запроса
         try {
             requestValidator.validate(version, authToken, md5Signature);
