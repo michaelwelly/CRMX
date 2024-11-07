@@ -4,6 +4,7 @@ import com.croco.dispatcherdbcontroller.dto.FieldServiceTeamDto;
 import com.croco.dispatcherdbcontroller.entity.FieldServiceTeam;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
@@ -15,6 +16,7 @@ import java.util.List;
 public interface FieldServiceTeamMapper {
     FieldServiceTeamDto toDto(FieldServiceTeam fieldServiceTeam);
 
+    @Mapping(target = "id", ignore = true)
     FieldServiceTeam toEntity(FieldServiceTeamDto fieldServiceTeamDto);
 
     List<FieldServiceTeamDto> toDto(List<FieldServiceTeam> fieldServiceTeams);

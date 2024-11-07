@@ -1,5 +1,6 @@
 package com.croco.dispatcherdbcontroller.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -30,7 +31,7 @@ public class Task {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.MERGE)
     @JoinColumn(name = "worker_id")
     private Worker worker;
 
@@ -55,7 +56,7 @@ public class Task {
     @Column(name = "is_complete_flag")
     private Boolean isCompleteFlag;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.MERGE)
     @JoinColumn(name = "medias", referencedColumnName = "collection_id")
     private Media medias;
 

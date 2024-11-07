@@ -1,5 +1,7 @@
 package com.croco.dispatcherdbcontroller.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,7 +29,21 @@ public class TaskDto {
     private OffsetDateTime completeWorkDttm;
     private Integer collectionId;
 
-    public TaskDto(Long id, Long workerId, Map<String, Object> incidentId, String titleStr, Integer orderNum, Map<String, Object> attributesJson, Map<String, Object> subtasksJson, Boolean isCompleteFlag, Integer mediaId, OffsetDateTime toBeginWorkDttm, OffsetDateTime beginWorkDttm, OffsetDateTime completeWorkDttm, Integer collectionId) {
+    @JsonCreator
+    public TaskDto(
+            @JsonProperty("id") Long id,
+            @JsonProperty("workerId") @NotNull Long workerId,
+            @JsonProperty("incidentId") Map<String, Object> incidentId,
+            @JsonProperty("titleStr") String titleStr,
+            @JsonProperty("orderNum") Integer orderNum,
+            @JsonProperty("attributesJson") Map<String, Object> attributesJson,
+            @JsonProperty("subtasksJson") Map<String, Object> subtasksJson,
+            @JsonProperty("isCompleteFlag") Boolean isCompleteFlag,
+            @JsonProperty("mediaId") Integer mediaId,
+            @JsonProperty("toBeginWorkDttm") OffsetDateTime toBeginWorkDttm,
+            @JsonProperty("beginWorkDttm") OffsetDateTime beginWorkDttm,
+            @JsonProperty("completeWorkDttm") OffsetDateTime completeWorkDttm,
+            @JsonProperty("collectionId") Integer collectionId) {
         this.id = id;
         this.workerId = workerId;
         this.incidentId = incidentId;

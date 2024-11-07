@@ -21,6 +21,7 @@ public interface MapMapper {
     Map partialUpdate(MapDto mapDto, @MappingTarget Map map);
 
     @Mapping(target = "mapType", source = "mapType", qualifiedByName = "mapStringToMapType")
+    @Mapping(target = "id", ignore = true)
     Map toEntity(MapDto mapDto);
 
     @Mapping(target = "mapType", source = "mapType", qualifiedByName = "mapMapTypeToString")

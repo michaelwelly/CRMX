@@ -17,6 +17,7 @@ public interface IncidentMapper {
     @Mapping(target = "incidentStatus", source = "incidentStatus", qualifiedByName = "mapStringToIncidentStatus")
     @Mapping(target = "team", source = "team")
     @Mapping(target = "tasks", source = "tasks")
+    @Mapping(target = "id", ignore = true)
     Incident toEntity(IncidentDto incidentDto);
 
     @Mapping(target = "locationType", source = "locationType", qualifiedByName = "mapLocationTypeToString")

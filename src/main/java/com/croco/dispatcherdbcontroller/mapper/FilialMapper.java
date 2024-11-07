@@ -18,6 +18,7 @@ import java.util.Map;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
 public interface FilialMapper {
+    @Mapping(target = "id", ignore = true)
     Filial toEntity(FilialDto filialDto);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
