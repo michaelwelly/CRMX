@@ -2,6 +2,7 @@ package com.croco.dispatcherdbcontroller.api.clients;
 
 import com.croco.dispatcherdbcontroller.kafka.DefaultProducer;
 import com.croco.dispatcherdbcontroller.kafka.MessageHandler;
+import com.croco.dispatcherdbcontroller.kafka.handlers.FieldServiceTeamHandler;
 import com.croco.dispatcherdbcontroller.kafka.handlers.IncidentHandler;
 import com.croco.dispatcherdbcontroller.kafka.handlers.MapHandler;
 import com.croco.dispatcherdbcontroller.kafka.handlers.MediaHandler;
@@ -30,7 +31,10 @@ public class KafkaMessageService {
                                MediaService mediaService,
                                ReporterService reporterService,
                                TaskService taskService,
-                               WorkerService workerService, DefaultProducer kafkaControllerProducer, JwtService jwtService) {
+                               WorkerService workerService,
+                               FieldServiceTeamService fieldServiceTeamService,
+                               DefaultProducer kafkaControllerProducer,
+                               JwtService jwtService) {
         this.kafkaControllerProducer = kafkaControllerProducer;
         this.jwtService = jwtService;
         handlers.put(EntityType.FILIAL, new FilialHandler(filialService, kafkaControllerProducer));
@@ -42,7 +46,7 @@ public class KafkaMessageService {
         handlers.put(EntityType.TASK, new TaskHandler(taskService, kafkaControllerProducer));
         handlers.put(EntityType.WORKER, new WorkerHandler(workerService, kafkaControllerProducer));
         handlers.put(EntityType.HEALTHCHECK, new HealthCheckHandler(kafkaControllerProducer));
-        handlers.put(EntityType.FIELDSERVICETEAM, new HealthCheckHandler(kafkaControllerProducer));
+        handlers.put(EntityType.FIELDSERVICETEAM, new FieldServiceTeamHandler(fieldServiceTeamService, kafkaControllerProducer));
     }
 
     public void handleMessage(KafkaMessage data) {

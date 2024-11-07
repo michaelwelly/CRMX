@@ -12,6 +12,7 @@ import java.util.List;
 public interface UserMapper {
     @Mapping(target = "userStatus", source = "userDto.userStatus", qualifiedByName = "mapStringToUserStatus")
     @Mapping(target = "userType", source = "userDto.userType", qualifiedByName = "mapStringToUserType")
+    @Mapping(target = "id", ignore = true)
     User toEntity(UserDto userDto);
 
     @Mapping(target = "userStatus", source = "user.userStatus", qualifiedByName = "mapUserStatusToString")

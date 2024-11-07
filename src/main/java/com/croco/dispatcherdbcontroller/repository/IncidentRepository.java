@@ -116,4 +116,6 @@ public interface IncidentRepository extends JpaRepository<Incident, Long>, JpaSp
     // Фильтр по тегу
     List<Incident> findByIncidentStatusAndIncidentType(IncidentStatus incidentStatus, IncidentType incidentType);
 
+
+
 }

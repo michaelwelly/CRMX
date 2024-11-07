@@ -18,4 +18,9 @@ public interface FieldServiceTeamRepository extends JpaRepository<FieldServiceTe
 
     @Query("SELECT fst FROM FieldServiceTeam fst LEFT JOIN FETCH fst.workers w")
     List<FieldServiceTeam> findAllWithWorkers();
+
+    Optional<FieldServiceTeam> findByNameStr(String nameStr);
+
+    @Query("SELECT COALESCE(MAX(f.id), 0) FROM FieldServiceTeam f")
+    Long findMaxId();
 }

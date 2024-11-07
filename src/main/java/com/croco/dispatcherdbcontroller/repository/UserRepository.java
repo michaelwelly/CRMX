@@ -35,6 +35,8 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
 
     Optional<User> findByNameStrAndUserNameStrAndUserType(String nameStr, String userNameStr, UserType userType);
 
+    Optional<User> findByUserNameStr(String userNameStr);
+
     Optional<List<User>> findByUserNameStrEquals(String nameStr);
 
     @Query("SELECT COALESCE(MAX(u.id), 0) FROM User u")

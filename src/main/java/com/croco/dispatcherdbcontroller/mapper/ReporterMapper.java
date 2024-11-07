@@ -8,6 +8,7 @@ import java.util.List;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
 public interface ReporterMapper {
+    @Mapping(target = "id", ignore = true)
     Reporter toEntity(ReporterDto reporterDto);
 
     ReporterDto toDto(Reporter reporter);
