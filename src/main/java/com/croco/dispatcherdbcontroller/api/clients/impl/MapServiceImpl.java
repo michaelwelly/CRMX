@@ -32,6 +32,7 @@ public class MapServiceImpl implements MapService {
         Map map = mapRepository.findById(id).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "Map not found"));
         return mapMapper.toDto(map);
+
     }
 
     @Override

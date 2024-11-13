@@ -1,10 +1,12 @@
 package com.croco.dispatcherdbcontroller.api.clients.impl;
 
 import com.croco.dispatcherdbcontroller.api.clients.UserService;
+import com.croco.dispatcherdbcontroller.dto.Address;
 import com.croco.dispatcherdbcontroller.dto.IncidentDto;
 import com.croco.dispatcherdbcontroller.dto.IncidentFilter;
 import com.croco.dispatcherdbcontroller.entity.FieldServiceTeam;
 import com.croco.dispatcherdbcontroller.entity.Filial;
+import com.croco.dispatcherdbcontroller.entity.Map;
 import com.croco.dispatcherdbcontroller.entity.Incident;
 import com.croco.dispatcherdbcontroller.entity.IncidentStatus;
 import com.croco.dispatcherdbcontroller.entity.Reporter;
@@ -16,13 +18,9 @@ import com.croco.dispatcherdbcontroller.mapper.IncidentMapper;
 import com.croco.dispatcherdbcontroller.mapper.ReporterMapper;
 import com.croco.dispatcherdbcontroller.mapper.TaskMapper;
 import com.croco.dispatcherdbcontroller.mapper.UserMapper;
-import com.croco.dispatcherdbcontroller.repository.FieldServiceTeamRepository;
-import com.croco.dispatcherdbcontroller.repository.FilialRepository;
-import com.croco.dispatcherdbcontroller.repository.IncidentRepository;
+import com.croco.dispatcherdbcontroller.repository.*;
 import com.croco.dispatcherdbcontroller.api.clients.IncidentService;
-import com.croco.dispatcherdbcontroller.repository.ReporterRepository;
-import com.croco.dispatcherdbcontroller.repository.TaskRepository;
-import com.croco.dispatcherdbcontroller.repository.UserRepository;
+import com.croco.dispatcherdbcontroller.utils.DataUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
@@ -38,7 +36,7 @@ import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -51,6 +49,7 @@ public class IncidentServiceImpl implements IncidentService {
     private final FilialRepository filialRepository;
     private final TaskRepository taskRepository;
     private final FieldServiceTeamRepository fieldServiceTeamRepository;
+    private final MapRepository mapRepository;
     private final IncidentMapper incidentMapper;
     private final UserMapper userMapper;
     private final ReporterMapper reporterMapper;
@@ -106,7 +105,6 @@ public class IncidentServiceImpl implements IncidentService {
             });
         }
 
-
         // Проверяем наличие филиала
         Filial existingFilial = null;
         if (incidentDto.getFilial() != null) {
@@ -151,7 +149,6 @@ public class IncidentServiceImpl implements IncidentService {
             });
         }
 
-
         // Создаем инцидент с использованием найденных или созданных сущностей
             Incident incident = incidentMapper.toEntity(incidentDto);
             incident.setUser(existingUser);
@@ -159,6 +156,15 @@ public class IncidentServiceImpl implements IncidentService {
             incident.setFilial(existingFilial);
             incident.setTasks(existingTask);
             incident.setTeam(existingFieldServiceTeam);
+
+        // Проверяем наличие адреса в базе
+        if (incidentDto.getAddressJson() != null) {
+            Address address = DataUtils.parseAddress(incidentDto.getAddressJson());
+            Optional<Map> existingMap = mapRepository.findByTitleStrAndDescriptionTxt(address.getCity(), address.getStreet());
+            if (existingMap.isPresent()) {
+                incident.setAddressJson(existingMap.get().getAttributesJson());
+            }
+        }
 
         Incident savedIncident = incidentRepository.save(incident);
             return incidentMapper.toDto(savedIncident);
@@ -185,6 +191,16 @@ public class IncidentServiceImpl implements IncidentService {
             Incident existingIncident = incidentRepository.findIncident(id).orElseThrow(() ->
                     new ResponseStatusException(HttpStatus.NOT_FOUND, "Entity with id `%s` not found".formatted(id)));
             incidentMapper.partialUpdate(incidentDto, existingIncident);
+
+            // Проверяем наличие адреса в базе
+            if (incidentDto.getAddressJson() != null) {
+                Address address = DataUtils.parseAddress(incidentDto.getAddressJson());
+                Optional<Map> existingMap = mapRepository.findByTitleStrAndDescriptionTxt(address.getCity(), address.getStreet());
+                if (existingMap.isPresent()) {
+                    existingIncident.setAddressJson(existingMap.get().getAttributesJson());
+                }
+            }
+
             return incidentMapper.toDto(incidentRepository.save(existingIncident));
         }
 
@@ -262,8 +278,7 @@ public class IncidentServiceImpl implements IncidentService {
         }
 
         @Override
-        public List<IncidentDto> getFilteredIncidents (List < IncidentStatus > statuses, String startDate, String
-        endDate, User user, Map < String, String > attributes){
+        public List<IncidentDto> getFilteredIncidents (List<IncidentStatus> statuses, String startDate, String endDate, User user, java.util.Map<String, String> attributes){
             // Парсинг строковых дат в OffsetDateTime
             OffsetDateTime startDateTime = parseDate(startDate);
             OffsetDateTime endDateTime = parseDate(endDate);
