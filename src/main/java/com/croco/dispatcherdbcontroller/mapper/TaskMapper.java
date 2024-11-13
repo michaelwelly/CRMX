@@ -9,19 +9,23 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
 import java.util.List;
+import java.util.Set;
 
 @Mapper(componentModel = "spring")
 public interface TaskMapper {
-    TaskDto toDto(Task task);
-
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "incident.id", source = "incidentId")
     Task toEntity(TaskDto taskDto);
 
-    List<TaskDto> toDto(List<Task> tasks);
+    @Mapping(target = "incidentId", source = "incident.id")
+    TaskDto toDto(Task task);
+
+    Set<TaskDto> toDto(Set<Task> tasks);
 
     List<Task> toEntity(List<TaskDto> taskDtos);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     Task partialUpdate(TaskDto taskDto, @MappingTarget Task task);
 
+    List<TaskDto> toDto(List<Task> tasks);
 }

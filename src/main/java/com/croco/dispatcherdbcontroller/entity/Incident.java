@@ -10,7 +10,9 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.time.OffsetDateTime;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -88,8 +90,7 @@ public class Incident {
     @JoinColumn(name = "team_id")
     private FieldServiceTeam team;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
-    @JoinColumn(name = "tasks_id")
-    private Task tasks;
+    @OneToMany(mappedBy = "incident")
+    private Set<Task> tasks = new LinkedHashSet<>();
 
 }

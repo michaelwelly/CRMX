@@ -16,8 +16,8 @@ public class TaskDto {
 
     @NotNull
     private Long workerId; // ID работника
-
-    private Map<String, Object> incidentId;
+    @NotNull
+    private Long incidentId;
     private String titleStr;
     private Integer orderNum;
     private Map<String, Object> attributesJson;
@@ -33,7 +33,7 @@ public class TaskDto {
     public TaskDto(
             @JsonProperty("id") Long id,
             @JsonProperty("workerId") @NotNull Long workerId,
-            @JsonProperty("incidentId") Map<String, Object> incidentId,
+            @JsonProperty("incidentId") Long incidentId,
             @JsonProperty("titleStr") String titleStr,
             @JsonProperty("orderNum") Integer orderNum,
             @JsonProperty("attributesJson") Map<String, Object> attributesJson,

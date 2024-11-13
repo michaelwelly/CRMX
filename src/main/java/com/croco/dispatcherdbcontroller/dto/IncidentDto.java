@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.OffsetDateTime;
 import java.util.Map;
+import java.util.Set;
 
 @Value
 public class IncidentDto {
@@ -34,7 +35,7 @@ public class IncidentDto {
     String addressStr;
     OffsetDateTime changedDttm;
     FieldServiceTeamDto team;
-    TaskDto tasks;
+    Set<TaskDto> tasks;
 
     @JsonCreator
     public IncidentDto(
@@ -54,7 +55,7 @@ public class IncidentDto {
             @JsonProperty("addressStr") String addressStr,
             @JsonProperty("changedDttm") OffsetDateTime changedDttm,
             @JsonProperty("team") FieldServiceTeamDto team,
-            @JsonProperty("tasks") TaskDto tasks) {
+            @JsonProperty("tasks") Set<TaskDto>  tasks) {
         this.id = id;
         this.reporter = reporter;
         this.user = user;

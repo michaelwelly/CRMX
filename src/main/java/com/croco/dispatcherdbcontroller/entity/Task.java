@@ -35,10 +35,6 @@ public class Task {
     @JoinColumn(name = "worker_id")
     private Worker worker;
 
-    @Column(name = "incident_id")
-    @JdbcTypeCode(SqlTypes.JSON)
-    private Map<String, Object> incidentId;
-
     @Column(name = "title_str", length = Integer.MAX_VALUE)
     private String titleStr;
 
@@ -72,7 +68,8 @@ public class Task {
     @Column(name = "collection_id")
     private Integer collectionId;
 
-    @OneToMany(mappedBy = "tasks")
-    private Set<Incident> incidents = new LinkedHashSet<>();
+    @ManyToOne
+    @JoinColumn(name = "incident_id")
+    private Incident incident;
 
 }

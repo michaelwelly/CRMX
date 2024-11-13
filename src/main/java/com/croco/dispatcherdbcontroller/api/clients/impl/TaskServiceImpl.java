@@ -1,8 +1,10 @@
 package com.croco.dispatcherdbcontroller.api.clients.impl;
 
 import com.croco.dispatcherdbcontroller.dto.TaskDto;
+import com.croco.dispatcherdbcontroller.entity.Incident;
 import com.croco.dispatcherdbcontroller.entity.Task;
 import com.croco.dispatcherdbcontroller.mapper.TaskMapper;
+import com.croco.dispatcherdbcontroller.repository.IncidentRepository;
 import com.croco.dispatcherdbcontroller.repository.TaskRepository;
 import com.croco.dispatcherdbcontroller.api.clients.TaskService;
 import org.springframework.http.HttpStatus;
@@ -14,10 +16,12 @@ import java.util.List;
 @Service
 public class TaskServiceImpl implements TaskService {
     private final TaskRepository taskRepository;
+    private final IncidentRepository incidentRepository;
     private final TaskMapper taskMapper;
 
-    public TaskServiceImpl(TaskRepository taskRepository, TaskMapper taskMapper) {
+    public TaskServiceImpl(TaskRepository taskRepository, IncidentRepository incidentRepository, TaskMapper taskMapper) {
         this.taskRepository = taskRepository;
+        this.incidentRepository = incidentRepository;
         this.taskMapper = taskMapper;
     }
 
@@ -37,6 +41,11 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public TaskDto create(TaskDto taskDto) {
         Task task = taskMapper.toEntity(taskDto);
+        if (taskDto.getIncidentId() != null) {
+            Incident incident = incidentRepository.findById(taskDto.getIncidentId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Incident not found"));
+            task.setIncident(incident);
+        }
         Task savedTask = taskRepository.save(task);
         return taskMapper.toDto(savedTask);
     }
@@ -46,6 +55,14 @@ public class TaskServiceImpl implements TaskService {
         Task existingTask = taskRepository.findById(id).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found"));
         taskMapper.partialUpdate(taskDto, existingTask); // Метод для частичного обновления
+        if (taskDto.getIncidentId() != null) {
+            Incident incident = incidentRepository.findById(taskDto.getIncidentId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Incident not found"));
+            existingTask.setIncident(incident);
+        } else {
+            existingTask.setIncident(null);
+        }
+
         return taskMapper.toDto(taskRepository.save(existingTask));
     }
 
