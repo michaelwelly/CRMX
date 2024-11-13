@@ -4,6 +4,7 @@ import com.croco.dispatcherdbcontroller.api.clients.UserService;
 import com.croco.dispatcherdbcontroller.dto.Address;
 import com.croco.dispatcherdbcontroller.dto.IncidentDto;
 import com.croco.dispatcherdbcontroller.dto.IncidentFilter;
+import com.croco.dispatcherdbcontroller.dto.TaskDto;
 import com.croco.dispatcherdbcontroller.entity.FieldServiceTeam;
 import com.croco.dispatcherdbcontroller.entity.Filial;
 import com.croco.dispatcherdbcontroller.entity.Map;
@@ -34,9 +35,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
@@ -122,14 +121,14 @@ public class IncidentServiceImpl implements IncidentService {
 
         // Проверяем наличие task
         Task existingTask = null;
-        if (incidentDto.getTasks() != null) {
+        if (incidentDto.getTasks() != null && !incidentDto.getTasks().isEmpty()) {
             existingTask = taskRepository.findByTitleStrAndOrderNum(
-                    incidentDto.getTasks().getTitleStr(),
-                    incidentDto.getTasks().getOrderNum()
+                    incidentDto.getTasks().iterator().next().getTitleStr(),
+                    incidentDto.getTasks().iterator().next().getOrderNum()
             ).orElseGet(() -> {
                 // Если не найден, создаем новый task
                 Long newTaskId = taskRepository.findMaxId() + 1; // Получаем новый ID
-                Task newTask = taskMapper.toEntity(incidentDto.getTasks());
+                Task newTask = taskMapper.toEntity(incidentDto.getTasks().iterator().next());
                 newTask.setId(newTaskId); // Устанавливаем новый ID
                 return taskRepository.save(newTask);
             });
@@ -150,12 +149,22 @@ public class IncidentServiceImpl implements IncidentService {
         }
 
         // Создаем инцидент с использованием найденных или созданных сущностей
-            Incident incident = incidentMapper.toEntity(incidentDto);
-            incident.setUser(existingUser);
-            incident.setReporter(existingReporter);
-            incident.setFilial(existingFilial);
-            incident.setTasks(existingTask);
-            incident.setTeam(existingFieldServiceTeam);
+        Incident incident = incidentMapper.toEntity(incidentDto);
+        incident.setUser(existingUser);
+        incident.setReporter(existingReporter);
+        incident.setFilial(existingFilial);
+        incident.setTeam(existingFieldServiceTeam);
+
+        // Обработка задач
+        if (incidentDto.getTasks() != null) {
+            Set<Task> tasks = new LinkedHashSet<>();
+            for (TaskDto taskDto : incidentDto.getTasks()) {
+                Task task = taskMapper.toEntity(taskDto);
+                task.setIncident(incident);
+                tasks.add(task);
+            }
+            incident.setTasks(tasks);
+        }
 
         // Проверяем наличие адреса в базе
         if (incidentDto.getAddressJson() != null) {
@@ -191,6 +200,17 @@ public class IncidentServiceImpl implements IncidentService {
             Incident existingIncident = incidentRepository.findIncident(id).orElseThrow(() ->
                     new ResponseStatusException(HttpStatus.NOT_FOUND, "Entity with id `%s` not found".formatted(id)));
             incidentMapper.partialUpdate(incidentDto, existingIncident);
+
+            // Обновление задач
+            if (incidentDto.getTasks() != null) {
+                Set<Task> updatedTasks = new LinkedHashSet<>();
+                for (TaskDto taskDto : incidentDto.getTasks()) {
+                    Task task = taskMapper.toEntity(taskDto);
+                    task.setIncident(existingIncident);
+                    updatedTasks.add(task);
+                }
+                existingIncident.setTasks(updatedTasks);
+            }
 
             // Проверяем наличие адреса в базе
             if (incidentDto.getAddressJson() != null) {
@@ -320,7 +340,7 @@ public class IncidentServiceImpl implements IncidentService {
                 Hibernate.initialize(filial);
             }
 
-            Task tasks = incident.getTasks();
+            Set<Task> tasks = incident.getTasks();
             if (tasks != null) {
                 Hibernate.initialize(tasks);
             }
