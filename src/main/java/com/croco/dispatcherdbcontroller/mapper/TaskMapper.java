@@ -14,10 +14,8 @@ import java.util.Set;
 @Mapper(componentModel = "spring")
 public interface TaskMapper {
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "incident.id", source = "incidentId")
     Task toEntity(TaskDto taskDto);
 
-    @Mapping(target = "incidentId", source = "incident.id")
     TaskDto toDto(Task task);
 
     Set<TaskDto> toDto(Set<Task> tasks);
@@ -25,6 +23,7 @@ public interface TaskMapper {
     List<Task> toEntity(List<TaskDto> taskDtos);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "id", ignore = true)
     Task partialUpdate(TaskDto taskDto, @MappingTarget Task task);
 
     List<TaskDto> toDto(List<Task> tasks);

@@ -22,6 +22,7 @@ public interface UserMapper {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "userStatus", source = "userDto.userStatus", qualifiedByName = "mapStringToUserStatus")
     @Mapping(target = "userType", source = "userDto.userType", qualifiedByName = "mapStringToUserType")
+    @Mapping(target = "id", ignore = true)
     User partialUpdate(UserDto userDto, @MappingTarget User user);
 
     @Mapping(target = "userStatus", source = "user.userStatus", qualifiedByName = "mapUserStatusToString")

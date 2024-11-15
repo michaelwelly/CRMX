@@ -41,10 +41,10 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public TaskDto create(TaskDto taskDto) {
         Task task = taskMapper.toEntity(taskDto);
-        if (taskDto.getIncidentId() != null) {
-            Incident incident = incidentRepository.findById(taskDto.getIncidentId())
+        if (taskDto.getIncident() != null) {
+            Incident incident = incidentRepository.findById(taskDto.getIncident())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Incident not found"));
-            task.setIncident(incident);
+            task.setIncident(incident.getId());
         }
         Task savedTask = taskRepository.save(task);
         return taskMapper.toDto(savedTask);
@@ -55,10 +55,10 @@ public class TaskServiceImpl implements TaskService {
         Task existingTask = taskRepository.findById(id).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found"));
         taskMapper.partialUpdate(taskDto, existingTask); // Метод для частичного обновления
-        if (taskDto.getIncidentId() != null) {
-            Incident incident = incidentRepository.findById(taskDto.getIncidentId())
+        if (taskDto.getIncident() != null) {
+            Incident incident = incidentRepository.findById(taskDto.getIncident())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Incident not found"));
-            existingTask.setIncident(incident);
+            existingTask.setIncident(incident.getId());
         } else {
             existingTask.setIncident(null);
         }

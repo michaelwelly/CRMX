@@ -20,7 +20,6 @@ public class IncidentDto {
     @NotNull
     IncidentType incidentType;
     OffsetDateTime registrationDttm;
-    @NotNull
     OffsetDateTime execDttm;
     OffsetDateTime synchronizationDttm;
     LocationType locationType;

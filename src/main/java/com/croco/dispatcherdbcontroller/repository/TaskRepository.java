@@ -18,7 +18,10 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     @Query("SELECT t FROM Task t LEFT JOIN FETCH t.worker")
     List<Task> findAllWithWorkers();
 
-    Optional<Task> findByTitleStrAndOrderNum(String titleStr, Integer orderNum);
+    // Метод для поиска задач по параметрам
+    List<Task> findByWorkerIdAndTitleStrAndIsCompleteFlag(Long workerId, String titleStr, Boolean isComplete);
+
+    List<Task> findByWorkerIdAndIsCompleteFlag(Long workerId, Boolean isComplete);
 
     @Query("SELECT COALESCE(MAX(t.id), 0) FROM Task t")
     Long findMaxId();

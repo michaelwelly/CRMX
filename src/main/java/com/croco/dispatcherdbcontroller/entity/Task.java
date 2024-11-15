@@ -68,8 +68,11 @@ public class Task {
     @Column(name = "collection_id")
     private Integer collectionId;
 
-    @ManyToOne
-    @JoinColumn(name = "incident_id")
-    private Incident incident;
+    @Column(name = "incident_id")
+    @JdbcTypeCode(SqlTypes.JSON)
+    private Map<String, Object> incidentId;
+
+    @Column(name = "incident")
+    private Long incident;
 
 }

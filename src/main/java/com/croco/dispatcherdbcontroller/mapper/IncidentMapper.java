@@ -36,6 +36,7 @@ public interface IncidentMapper {
     List<IncidentDto> toDto(List<Incident> incidents);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "id", ignore = true)
     @Mapping(target = "locationType", source = "locationType", qualifiedByName = "mapStringToLocationType")
     @Mapping(target = "incidentType", source = "incidentType", qualifiedByName = "mapStringToIncidentType")
     @Mapping(target = "incidentStatus", source = "incidentStatus", qualifiedByName = "mapStringToIncidentStatus")

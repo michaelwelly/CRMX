@@ -20,6 +20,7 @@ public interface MediaMapper {
     List<MediaDto> toDto(List<Media> mediaList);
     List<Media> toEntity(List<MediaDto> mediaDtos);
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "id", ignore = true)
     Media partialUpdate(MediaDto mediaDto, @MappingTarget Media media);
 
 }

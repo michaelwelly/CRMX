@@ -17,16 +17,23 @@ import java.util.Optional;
 @Repository
 public interface IncidentRepository extends JpaRepository<Incident, Long>, JpaSpecificationExecutor<Incident> {
 
-
     @Query("SELECT i FROM Incident i " +
-            "LEFT JOIN FETCH i.reporter " +
-            "LEFT JOIN FETCH i.user " +
-            "LEFT JOIN FETCH i.filial " +
-            "LEFT JOIN FETCH i.tasks " +
-            "LEFT JOIN FETCH i.team " +
-            "WHERE i.id = :id")
-    Optional<Incident> findIncident(Long id);
+            "LEFT JOIN FETCH i.reporter r " +
+            "LEFT JOIN FETCH i.user u " +
+            "LEFT JOIN FETCH i.filial f " +
+            "LEFT JOIN FETCH i.tasks t " +
+            "LEFT JOIN FETCH i.team te " +
+            "WHERE i.id = :id " +
+            "AND (r IS NULL OR r.id IS NOT NULL) " +
+            "AND (u IS NULL OR u.id IS NOT NULL) " +
+            "AND (f IS NULL OR f.id IS NOT NULL) " +
+            "AND (te IS NULL OR te.id IS NOT NULL)")
+    Optional<Incident> findIncident(@Param("id") Long id);
 
+
+    @Query(value = "SELECT * FROM incident WHERE id = :id", nativeQuery = true)
+    @Override
+    Optional<Incident> findById(@Param("id") Long id);
 
     @Query("SELECT i FROM Incident i " +
             "LEFT JOIN FETCH i.reporter " +

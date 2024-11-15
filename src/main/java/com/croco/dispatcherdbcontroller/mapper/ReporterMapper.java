@@ -16,5 +16,6 @@ public interface ReporterMapper {
     List<ReporterDto> toDto(List<Reporter> reporters);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "id", ignore = true)
     Reporter partialUpdate(ReporterDto reporterDto, @MappingTarget Reporter reporter);
 }

@@ -22,6 +22,7 @@ public interface FilialMapper {
     Filial toEntity(FilialDto filialDto);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "id", ignore = true)
     Filial partialUpdate(FilialDto filialDto, @MappingTarget Filial filial);
 
     List<FilialDto> toDto(List<Filial> filial);
