@@ -3,10 +3,12 @@ package com.croco.dispatcherdbcontroller.api.clients.impl;
 import com.croco.dispatcherdbcontroller.dto.TaskDto;
 import com.croco.dispatcherdbcontroller.entity.Incident;
 import com.croco.dispatcherdbcontroller.entity.Task;
+import com.croco.dispatcherdbcontroller.entity.Worker;
 import com.croco.dispatcherdbcontroller.mapper.TaskMapper;
 import com.croco.dispatcherdbcontroller.repository.IncidentRepository;
 import com.croco.dispatcherdbcontroller.repository.TaskRepository;
 import com.croco.dispatcherdbcontroller.api.clients.TaskService;
+import com.croco.dispatcherdbcontroller.repository.WorkerRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -17,11 +19,13 @@ import java.util.List;
 public class TaskServiceImpl implements TaskService {
     private final TaskRepository taskRepository;
     private final IncidentRepository incidentRepository;
+    private final WorkerRepository workerRepository;
     private final TaskMapper taskMapper;
 
-    public TaskServiceImpl(TaskRepository taskRepository, IncidentRepository incidentRepository, TaskMapper taskMapper) {
+    public TaskServiceImpl(TaskRepository taskRepository, IncidentRepository incidentRepository, WorkerRepository workerRepository, TaskMapper taskMapper) {
         this.taskRepository = taskRepository;
         this.incidentRepository = incidentRepository;
+        this.workerRepository = workerRepository;
         this.taskMapper = taskMapper;
     }
 
@@ -54,7 +58,22 @@ public class TaskServiceImpl implements TaskService {
     public TaskDto update(Long id, TaskDto taskDto) {
         Task existingTask = taskRepository.findById(id).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found"));
-        taskMapper.partialUpdate(taskDto, existingTask); // Метод для частичного обновления
+         if(existingTask.getWorker()!=null && taskDto.getWorkerId() == null){
+             taskDto.setWorkerId(existingTask.getWorker().getId());
+         }
+        // Обновление полей задачи
+        taskMapper.partialUpdate(taskDto, existingTask);
+
+        // Установка worker, если он существует
+        if (taskDto.getWorkerId() != null) {
+            Worker worker = workerRepository.findById(taskDto.getWorkerId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Worker not found"));
+            existingTask.setWorker(worker); // Устанавливаем найденного работника
+        } else {
+            existingTask.setWorker(null); // Или можно оставить текущее значение
+        }
+
+        // Обновление инцидента
         if (taskDto.getIncident() != null) {
             Incident incident = incidentRepository.findById(taskDto.getIncident())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Incident not found"));

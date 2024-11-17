@@ -14,7 +14,6 @@ import java.util.Map;
 public class TaskDto {
     private Long id;
 
-    @NotNull
     private Long workerId; // ID работника
     @NotNull
     private Long incident;

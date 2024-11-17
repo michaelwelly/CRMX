@@ -13,9 +13,11 @@ import java.util.Set;
 
 @Mapper(componentModel = "spring")
 public interface TaskMapper {
+    @Mapping(target = "worker.id", source = "workerId") // Маппим workerId на worker
     @Mapping(target = "id", ignore = true)
     Task toEntity(TaskDto taskDto);
 
+    @Mapping(target = "workerId", source = "worker.id") // Маппим worker на workerId
     TaskDto toDto(Task task);
 
     Set<TaskDto> toDto(Set<Task> tasks);
