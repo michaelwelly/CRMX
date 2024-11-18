@@ -231,18 +231,43 @@ public class IncidentServiceImpl implements IncidentService {
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
             incident.setUser(user);
         }
-
         if (incidentDto.getTeam() != null) {
             FieldServiceTeam team = fieldServiceTeamRepository.findById(incidentDto.getTeam().getId())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Team not found"));
             incident.setTeam(team);
         }
 
+        // Обновляем задачи
+        if (incidentDto.getTasks() != null) {
+            // Очищаем текущие задачи, чтобы избежать проблем с orphan removal
+            Set<Task> existingTasks = new LinkedHashSet<>(incident.getTasks());
+            incident.getTasks().clear();
+
+            for (TaskDto taskDto : incidentDto.getTasks()) {
+                Task task;
+                if (taskDto.getId() != null) {
+                    // Если ID задачи присутствует, ищем существующую задачу
+                    task = taskRepository.findById(taskDto.getId())
+                            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found with id `%s`".formatted(taskDto.getId())));
+                    // Обновляем существующую задачу
+                    taskMapper.partialUpdate(taskDto, task);
+                    incident.getTasks().add(task); // Добавляем обновленную задачу обратно
+                } else {
+                    // Если ID задачи отсутствует, создаем новую задачу
+                    task = taskMapper.toEntity(taskDto);
+                    task.setIncident(incident.getId()); // Устанавливаем связь с инцидентом
+                    incident.getTasks().add(task); // Добавляем новую задачу
+                }
+            }
+        } else {
+            // Если задач нет в incidentDto, очищаем текущие задачи
+            incident.getTasks().clear();
+        }
+
         // Сохраняем обновленный инцидент
         Incident updatedIncident = incidentRepository.save(incident);
         return incidentMapper.toDto(updatedIncident);
     }
-
 
     @Override
     public IncidentDto delete(Long id) {
