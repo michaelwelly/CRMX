@@ -20,6 +20,7 @@ public interface WorkerMapper {
     List<WorkerDto> toDto(List<Worker> workers);
     List<Worker> toEntity(List<WorkerDto> workerDtos);
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "id", ignore = true)
     Worker partialUpdate(WorkerDto workerDto, @MappingTarget Worker worker);
 
 }

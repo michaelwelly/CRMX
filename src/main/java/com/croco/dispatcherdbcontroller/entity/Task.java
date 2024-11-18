@@ -31,9 +31,9 @@ public class Task {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.MERGE)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinColumn(name = "worker_id")
-    private Worker worker;
+    private Worker worker; // Связь с работником
 
     @Column(name = "title_str", length = Integer.MAX_VALUE)
     private String titleStr;
@@ -68,8 +68,11 @@ public class Task {
     @Column(name = "collection_id")
     private Integer collectionId;
 
-    @ManyToOne
-    @JoinColumn(name = "incident_id")
-    private Incident incident;
+    @Column(name = "incident_id")
+    @JdbcTypeCode(SqlTypes.JSON)
+    private Map<String, Object> incidentId;
+
+    @Column(name = "incident")
+    private Long incident;
 
 }

@@ -14,10 +14,9 @@ import java.util.Map;
 public class TaskDto {
     private Long id;
 
-    @NotNull
     private Long workerId; // ID работника
     @NotNull
-    private Long incidentId;
+    private Long incident;
     private String titleStr;
     private Integer orderNum;
     private Map<String, Object> attributesJson;
@@ -29,11 +28,12 @@ public class TaskDto {
     private OffsetDateTime completeWorkDttm;
     private Integer collectionId;
 
+
     @JsonCreator
     public TaskDto(
             @JsonProperty("id") Long id,
             @JsonProperty("workerId") @NotNull Long workerId,
-            @JsonProperty("incidentId") Long incidentId,
+            @JsonProperty("incident") Long incident,
             @JsonProperty("titleStr") String titleStr,
             @JsonProperty("orderNum") Integer orderNum,
             @JsonProperty("attributesJson") Map<String, Object> attributesJson,
@@ -46,7 +46,7 @@ public class TaskDto {
             @JsonProperty("collectionId") Integer collectionId) {
         this.id = id;
         this.workerId = workerId;
-        this.incidentId = incidentId;
+        this.incident = incident;
         this.titleStr = titleStr;
         this.orderNum = orderNum;
         this.attributesJson = attributesJson;

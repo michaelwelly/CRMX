@@ -18,6 +18,7 @@ import java.util.List;
 public interface MapMapper {
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "id", ignore = true)
     Map partialUpdate(MapDto mapDto, @MappingTarget Map map);
 
     @Mapping(target = "mapType", source = "mapType", qualifiedByName = "mapStringToMapType")

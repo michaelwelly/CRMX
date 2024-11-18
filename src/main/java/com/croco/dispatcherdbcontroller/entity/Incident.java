@@ -90,7 +90,7 @@ public class Incident {
     @JoinColumn(name = "team_id")
     private FieldServiceTeam team;
 
-    @OneToMany(mappedBy = "incident")
+    @OneToMany(mappedBy = "incident", fetch = FetchType.EAGER,  cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Task> tasks = new LinkedHashSet<>();
 
 }

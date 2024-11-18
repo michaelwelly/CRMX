@@ -24,6 +24,7 @@ public interface FieldServiceTeamMapper {
     List<FieldServiceTeam> toEntity(List<FieldServiceTeamDto> fieldServiceTeamDtos);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "id", ignore = true)
     FieldServiceTeam partialUpdate(FieldServiceTeamDto fieldServiceTeamDto, @MappingTarget FieldServiceTeam fieldServiceTeam);
 
 }

@@ -108,7 +108,6 @@ public class IncidentController {
                 .body(updatedIncident);
     }
 
-
     @PutMapping("/{id}")
     public ResponseEntity<IncidentDto> update(@PathVariable Long id, @RequestBody @Validated IncidentDto incidentDto,
                                               @RequestHeader(value = "Version", defaultValue = "1.0") String version,
